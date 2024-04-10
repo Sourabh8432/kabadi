@@ -6,9 +6,11 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
 import 'package:kabadi_app/utils/app_colors.dart';
 import 'package:kabadi_app/utils/app_constants.dart';
 import 'package:kabadi_app/utils/app_images.dart';
+import '../../models/date_list_models.dart';
 import '../../models/get_price_list.dart';
 import '../../routes/app_pages.dart';
 import 'sell_scrap_item_controller.dart';
@@ -219,21 +221,23 @@ class SellScrapItemView extends StatelessWidget {
                                 ListView.builder(
                                   padding: EdgeInsets.zero,
                                   shrinkWrap: true,
-                                  physics:
-                                      const NeverScrollableScrollPhysics(),
-                                  itemCount:
-                                      controller.getAllPriceList.length,
+                                  physics: const NeverScrollableScrollPhysics(),
+                                  itemCount: controller.getAllPriceList.length,
                                   itemBuilder: (context, index) {
-                                    int? categoryId = controller.getAllPriceList[index].id;
-                                    print("getAllPriceList : ${controller.getAllPriceList.length}");
+                                    int? categoryId =
+                                        controller.getAllPriceList[index].id;
+                                    print(
+                                        "getAllPriceList : ${controller.getAllPriceList.length}");
                                     return Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
                                       children: [
                                         const SizedBox(
                                           height: 20,
                                         ),
                                         Text(
-                                          controller.getAllPriceList[index].name.toString(),
+                                          controller.getAllPriceList[index].name
+                                              .toString(),
                                           style: TextStyle(
                                             fontSize: 16,
                                             fontFamily: "Poppins",
@@ -244,7 +248,8 @@ class SellScrapItemView extends StatelessWidget {
                                         const SizedBox(
                                           height: 20,
                                         ),
-                                        SizedBox(height: 80,
+                                        SizedBox(
+                                          height: 80,
                                           child: ListView.builder(
                                             scrollDirection: Axis.horizontal,
                                             itemCount: controller
@@ -257,11 +262,21 @@ class SellScrapItemView extends StatelessWidget {
                                                       .getAllPriceList[index]
                                                       .subCategories![myIndex];
 
-                                              bool isSelected = controller.selectedSubCategoryIdsMap[categoryId]?.contains(getList.categoryId) ?? false;
+                                              bool isSelected = controller
+                                                      .selectedSubCategoryIdsMap[
+                                                          categoryId]
+                                                      ?.contains(
+                                                          getList.categoryId) ??
+                                                  false;
 
-                                              return InkWell(onTap: (){
-                                                controller.toggleCategorySelection(categoryId ?? 0, getList.categoryId ?? 0);
-                                              },
+                                              return InkWell(
+                                                onTap: () {
+                                                  controller
+                                                      .toggleCategorySelection(
+                                                          categoryId ?? 0,
+                                                          getList.categoryId ??
+                                                              0);
+                                                },
                                                 child: Container(
                                                   margin: const EdgeInsets.only(
                                                       right: 10),
@@ -272,14 +287,18 @@ class SellScrapItemView extends StatelessWidget {
                                                           BorderRadius.circular(
                                                               10),
                                                       border: Border.all(
-                                                          color: isSelected ?primaryColor:borderColor,
+                                                          color: isSelected
+                                                              ? primaryColor
+                                                              : borderColor,
                                                           width: 1)),
                                                   child: Column(
                                                     crossAxisAlignment:
-                                                        CrossAxisAlignment.start,
+                                                        CrossAxisAlignment
+                                                            .start,
                                                     children: [
                                                       Text(
-                                                          getList.name.toString(),
+                                                          getList.name
+                                                              .toString(),
                                                           style: TextStyle(
                                                               fontSize: 14,
                                                               fontFamily:
@@ -298,7 +317,8 @@ class SellScrapItemView extends StatelessWidget {
                                                               fontSize: 14,
                                                               fontFamily:
                                                                   "Poppins",
-                                                              color: textSubColor,
+                                                              color:
+                                                                  textSubColor,
                                                               fontWeight:
                                                                   FontWeight
                                                                       .w400)),
@@ -324,33 +344,45 @@ class SellScrapItemView extends StatelessWidget {
                                 Row(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    InkWell(onTap: (){
-                                      controller.uploadImage();
-                                    },
+                                    InkWell(
+                                      onTap: () {
+                                        controller.uploadImage().then((value) {
+                                          controller.uploadImageApi();
+                                        });
+                                      },
                                       child: Padding(
-                                        padding: const EdgeInsets.symmetric(vertical: 10,
-                                            horizontal: 10),
+                                        padding: const EdgeInsets.symmetric(
+                                            vertical: 10, horizontal: 10),
                                         child: SvgPicture.asset(
                                             height: 70,
                                             width: 70,
                                             AppImages.emptyImage),
                                       ),
                                     ),
-                                    const SizedBox(width: 8,),
+                                    const SizedBox(
+                                      width: 8,
+                                    ),
                                     Expanded(
                                       child: Wrap(
                                         spacing: 8,
                                         runSpacing: 8,
-                                        children: controller.images.asMap().entries.map((entry) {
+                                        children: controller.images
+                                            .asMap()
+                                            .entries
+                                            .map((entry) {
                                           final index = entry.key;
                                           final image = entry.value;
                                           return Stack(
                                             children: [
                                               Padding(
-                                                padding: const EdgeInsets.symmetric(vertical: 10,horizontal: 4),
-                                                child: InkWell(onTap: (){
-                                                  controller.uploadImage();
-                                                },
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                        vertical: 10,
+                                                        horizontal: 4),
+                                                child: InkWell(
+                                                  onTap: () {
+                                                    controller.uploadImage();
+                                                  },
                                                   child: Image.file(
                                                     image,
                                                     width: 70,
@@ -363,9 +395,12 @@ class SellScrapItemView extends StatelessWidget {
                                                 top: 0,
                                                 right: 0,
                                                 child: GestureDetector(
-                                                  onTap: () => controller.removeImage(index),
-                                                  child:  CircleAvatar(radius: 13,
-                                                    backgroundColor: darkGreenColor,
+                                                  onTap: () => controller
+                                                      .removeImage(index),
+                                                  child: CircleAvatar(
+                                                    radius: 13,
+                                                    backgroundColor:
+                                                        darkGreenColor,
                                                     child: const Icon(
                                                       Icons.close,
                                                       color: Colors.white,
@@ -379,7 +414,6 @@ class SellScrapItemView extends StatelessWidget {
                                         }).toList(),
                                       ),
                                     ),
-
                                   ],
                                 ),
                                 // Row(
@@ -486,10 +520,23 @@ class SellScrapItemView extends StatelessWidget {
                                       border:
                                           Border.all(color: lightGreenColor)),
                                   child: InkWell(
-                                    onTap: () => _showDatePickerPopup(context),
+                                    onTap: () async {
+                                      DateList? dateList =
+                                          await SellScrapItemController.getDateListApi();
+
+                                      if (dateList != null && dateList.data != null && dateList.data!.isNotEmpty) {
+                                        controller.selectedDate = await _showDatePickerPopup(context, dateList);
+                                        if (controller.selectedDate != null) {
+                                          controller.selectedDate = controller.selectedDate; // Update selectedDate in controller
+                                          controller.update(); // Trigger UI update
+                                        }
+                                      }
+                                    },
                                     child: Row(
                                       children: [
-                                        Text("30 January, 2024",
+                                        Text( controller.selectedDate != null
+                                            ? controller.selectedDate!.toString()
+                                            : 'Select a date',
                                             style: TextStyle(
                                                 fontSize: 16,
                                                 fontFamily: "Poppins",
@@ -931,7 +978,7 @@ class SellScrapItemView extends StatelessWidget {
             onTap: () {
               if (controller.currentStep.value == 0) {
                 controller.currentStep.value = 1;
-                controller.uploadImageApi();
+                SellScrapItemController.getDateListApi();
               } else if (controller.currentStep.value == 1) {
                 controller.currentStep.value = 2;
               } else {
@@ -963,42 +1010,51 @@ class SellScrapItemView extends StatelessWidget {
     );
   }
 
-  void _showDatePickerPopup(BuildContext context) {
-    showDialog(
+  static Future<DateListData?> _showDatePickerPopup(
+      BuildContext context, DateList dateList) async {
+    return await showDialog<DateListData>(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
           title: const Text(
             'Select Pickup Date',
             style: TextStyle(
-                color: Color(0xff003032),
-                fontSize: 20,
-                fontWeight: FontWeight.w500,
-                fontFamily: "Poppins"),
+              color: Color(0xff003032),
+              fontSize: 20,
+              fontWeight: FontWeight.w500,
+              fontFamily: "Poppins",
+            ),
           ),
           content: SizedBox(
             width: double.maxFinite,
             child: SingleChildScrollView(
-              child: ListView.builder(
-                shrinkWrap: true,
-                itemCount: 10,
-                physics: const NeverScrollableScrollPhysics(),
-                itemBuilder: (context, index) {
-                  return Container(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 5, vertical: 10),
-                    child: const Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text('Wednesday'),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        Text('31 January, 2024'),
-                      ],
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                mainAxisSize: MainAxisSize.min,
+                children: dateList.data!.map((dateData) {
+                  return InkWell(
+                    onTap: () {
+                      Navigator.of(context)
+                          .pop(dateData); // Return selected dateData
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 5, vertical: 10),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            DateFormat('EEEE')
+                                .format(DateTime.parse(dateData.date!)),
+                            style: const TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                          const SizedBox(height: 5),
+                          Text(dateData.dateText!),
+                        ],
+                      ),
                     ),
                   );
-                },
+                }).toList(),
               ),
             ),
           ),

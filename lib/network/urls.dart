@@ -16,4 +16,5 @@ class Url {
   static String pickupRequest = "$baseUrl/api/pickup-request";
   static String addAddressUrl = "$baseUrl/api/add-address";
   static String imageUploadUrl = "$baseUrl/api/upload-images";
+  static String pickupDate = "$baseUrl/api/get-pickup-dates";
 }
