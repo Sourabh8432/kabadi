@@ -111,7 +111,7 @@ class OtpController extends GetxController {
         AppPrefrence.putString("userId", otpModels.data!.user!.userId ?? "null");
         AppPrefrence.putString("location", otpModels.data!.user!.location ?? "null");
         AppPrefrence.putInt("is_new_user", otpModels.data!.isNewUser);
-        Get.toNamed(Routes.enterNameView);
+        otpModels.data!.isNewUser!=0?Get.offAllNamed(Routes.enterNameView, arguments: otpModels.data!.user!.userId ?? "" ): Get.offAllNamed(Routes.sellScrapView);
         print("message : ${otpModels.message}");
       } else {
         print("message : ${otpModels.message}");

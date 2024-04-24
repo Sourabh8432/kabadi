@@ -43,6 +43,7 @@ dependencies:
   geolocator: ^11.0.0
   geocoding: ^3.0.0
   permission_handler: ^11.3.1
+  dio: ^5.4.3+1
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.6
@@ -72,6 +73,8 @@ flutter:
   assets:
     - assets/
     - assets/images/
+    - assets/language/en.json
+    - assets/language/hi.json
   fonts:
     - family: Montserrat
       fonts:

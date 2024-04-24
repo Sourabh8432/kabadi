@@ -8,13 +8,13 @@ class PickupRequestModels {
   PickupRequestModels.fromJson(Map<String, dynamic> json) {
     status = json['status'];
     message = json['message'];
-    data = json['data'] != null ? new PickupRequestData.fromJson(json['data']) : null;
+    data = json['data'] != null ? PickupRequestData.fromJson(json['data']) : null;
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['status'] = this.status;
-    data['message'] = this.message;
+    final Map<String, dynamic> data = Map<String, dynamic>();
+    data['status'] = status;
+    data['message'] = message;
     if (this.data != null) {
       data['data'] = this.data!.toJson();
     }
@@ -23,61 +23,176 @@ class PickupRequestModels {
 }
 
 class PickupRequestData {
+  List<PickupRequestUpcoming>? upcoming;
+  List<PickupRequestPrevious>? previous;
+
+  PickupRequestData({this.upcoming, this.previous});
+
+  PickupRequestData.fromJson(Map<String, dynamic> json) {
+    upcoming = json['upcoming'] != null
+        ? List<PickupRequestUpcoming>.from(json['upcoming'].map((x) => PickupRequestUpcoming.fromJson(x)))
+        : null;
+    previous = json['previous'] != null
+        ? List<PickupRequestPrevious>.from(json['previous'].map((x) => PickupRequestPrevious.fromJson(x)))
+        : null;
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = Map<String, dynamic>();
+    if (upcoming != null) {
+      data['upcoming'] = upcoming!.map((x) => x.toJson()).toList();
+    }
+    if (previous != null) {
+      data['previous'] = previous!.map((x) => x.toJson()).toList();
+    }
+    return data;
+  }
+}
+
+class PickupRequestUpcoming {
   String? pickupStatus;
+  String? pickupItemsName;
   String? pickupStatusText;
   String? pickupRequestId;
   String? pickupDate;
   String? pickupTime;
+  List<String>? images;
   String? pickupCancellationReason;
   List<PickupRequestItems>? pickupItems;
   PickupRequestAddress? pickupAddress;
   String? pickupInstructions;
+  String? payment;
+  String? remark;
 
-  PickupRequestData(
-      {this.pickupStatus,
-        this.pickupStatusText,
-        this.pickupRequestId,
-        this.pickupDate,
-        this.pickupTime,
-        this.pickupCancellationReason,
-        this.pickupItems,
-        this.pickupAddress,
-        this.pickupInstructions});
+  PickupRequestUpcoming({
+    this.pickupStatus,
+    this.pickupItemsName,
+    this.pickupStatusText,
+    this.pickupRequestId,
+    this.pickupDate,
+    this.pickupTime,
+    this.images,
+    this.pickupCancellationReason,
+    this.pickupItems,
+    this.pickupAddress,
+    this.pickupInstructions,
+    this.payment,
+    this.remark,
+  });
 
-  PickupRequestData.fromJson(Map<String, dynamic> json) {
+  PickupRequestUpcoming.fromJson(Map<String, dynamic> json) {
     pickupStatus = json['pickup_status'];
+    pickupItemsName = json['pickup_items_name'];
     pickupStatusText = json['pickup_status_text'];
     pickupRequestId = json['pickup_request_id'];
     pickupDate = json['pickup_date'];
     pickupTime = json['pickup_time'];
+    images = json['images'] != null ? List<String>.from(json['images']) : null;
     pickupCancellationReason = json['pickup_cancellation_reason'];
     if (json['pickup_items'] != null) {
-      pickupItems = <PickupRequestItems>[];
-      json['pickup_items'].forEach((v) {
-        pickupItems!.add(new PickupRequestItems.fromJson(v));
-      });
+      pickupItems = List<PickupRequestItems>.from(json['pickup_items'].map((x) => PickupRequestItems.fromJson(x)));
     }
-    pickupAddress = json['pickup_address'] != null
-        ? new PickupRequestAddress.fromJson(json['pickup_address'])
-        : null;
+    pickupAddress = json['pickup_address'] != null ? PickupRequestAddress.fromJson(json['pickup_address']) : null;
     pickupInstructions = json['pickup_instructions'];
+    payment = json['payment'];
+    remark = json['remark'];
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['pickup_status'] = this.pickupStatus;
-    data['pickup_status_text'] = this.pickupStatusText;
-    data['pickup_request_id'] = this.pickupRequestId;
-    data['pickup_date'] = this.pickupDate;
-    data['pickup_time'] = this.pickupTime;
-    data['pickup_cancellation_reason'] = this.pickupCancellationReason;
-    if (this.pickupItems != null) {
-      data['pickup_items'] = this.pickupItems!.map((v) => v.toJson()).toList();
+    final Map<String, dynamic> data = Map<String, dynamic>();
+    data['pickup_status'] = pickupStatus;
+    data['pickup_items_name'] = pickupItemsName;
+    data['pickup_status_text'] = pickupStatusText;
+    data['pickup_request_id'] = pickupRequestId;
+    data['pickup_date'] = pickupDate;
+    data['pickup_time'] = pickupTime;
+    if (images != null) {
+      data['images'] = images;
     }
-    if (this.pickupAddress != null) {
-      data['pickup_address'] = this.pickupAddress!.toJson();
+    data['pickup_cancellation_reason'] = pickupCancellationReason;
+    if (pickupItems != null) {
+      data['pickup_items'] = pickupItems!.map((x) => x.toJson()).toList();
     }
-    data['pickup_instructions'] = this.pickupInstructions;
+    if (pickupAddress != null) {
+      data['pickup_address'] = pickupAddress!.toJson();
+    }
+    data['pickup_instructions'] = pickupInstructions;
+    data['payment'] = payment;
+    data['remark'] = remark;
+    return data;
+  }
+}
+
+class PickupRequestPrevious {
+  String? pickupStatus;
+  String? pickupItemsName;
+  String? pickupStatusText;
+  String? pickupRequestId;
+  String? pickupDate;
+  String? pickupTime;
+  List<String>? images;
+  String? pickupCancellationReason;
+  List<PickupRequestItems>? pickupItems;
+  PickupRequestAddress? pickupAddress;
+  String? pickupInstructions;
+  String? payment;
+  String? remark;
+
+  PickupRequestPrevious({
+    this.pickupStatus,
+    this.pickupItemsName,
+    this.pickupStatusText,
+    this.pickupRequestId,
+    this.pickupDate,
+    this.pickupTime,
+    this.images,
+    this.pickupCancellationReason,
+    this.pickupItems,
+    this.pickupAddress,
+    this.pickupInstructions,
+    this.payment,
+    this.remark,
+  });
+
+  PickupRequestPrevious.fromJson(Map<String, dynamic> json) {
+    pickupStatus = json['pickup_status'];
+    pickupItemsName = json['pickup_items_name'];
+    pickupStatusText = json['pickup_status_text'];
+    pickupRequestId = json['pickup_request_id'];
+    pickupDate = json['pickup_date'];
+    pickupTime = json['pickup_time'];
+    images = json['images'] != null ? List<String>.from(json['images']) : null;
+    pickupCancellationReason = json['pickup_cancellation_reason'];
+    if (json['pickup_items'] != null) {
+      pickupItems = List<PickupRequestItems>.from(json['pickup_items'].map((x) => PickupRequestItems.fromJson(x)));
+    }
+    pickupAddress = json['pickup_address'] != null ? PickupRequestAddress.fromJson(json['pickup_address']) : null;
+    pickupInstructions = json['pickup_instructions'];
+    payment = json['payment'];
+    remark = json['remark'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = Map<String, dynamic>();
+    data['pickup_status'] = pickupStatus;
+    data['pickup_items_name'] = pickupItemsName;
+    data['pickup_status_text'] = pickupStatusText;
+    data['pickup_request_id'] = pickupRequestId;
+    data['pickup_date'] = pickupDate;
+    data['pickup_time'] = pickupTime;
+    if (images != null) {
+      data['images'] = images;
+    }
+    data['pickup_cancellation_reason'] = pickupCancellationReason;
+    if (pickupItems != null) {
+      data['pickup_items'] = pickupItems!.map((x) => x.toJson()).toList();
+    }
+    if (pickupAddress != null) {
+      data['pickup_address'] = pickupAddress!.toJson();
+    }
+    data['pickup_instructions'] = pickupInstructions;
+    data['payment'] = payment;
+    data['remark'] = remark;
     return data;
   }
 }
@@ -90,13 +205,14 @@ class PickupRequestItems {
   int? categoryId;
   String? categoryName;
 
-  PickupRequestItems(
-      {this.priceListName,
-        this.priceUnit,
-        this.weightUnit,
-        this.priceListId,
-        this.categoryId,
-        this.categoryName});
+  PickupRequestItems({
+    this.priceListName,
+    this.priceUnit,
+    this.weightUnit,
+    this.priceListId,
+    this.categoryId,
+    this.categoryName,
+  });
 
   PickupRequestItems.fromJson(Map<String, dynamic> json) {
     priceListName = json['price_list_name'];
@@ -108,13 +224,13 @@ class PickupRequestItems {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['price_list_name'] = this.priceListName;
-    data['price_unit'] = this.priceUnit;
-    data['weight_unit'] = this.weightUnit;
-    data['price_list_id'] = this.priceListId;
-    data['category_id'] = this.categoryId;
-    data['category_name'] = this.categoryName;
+    final Map<String, dynamic> data = Map<String, dynamic>();
+    data['price_list_name'] = priceListName;
+    data['price_unit'] = priceUnit;
+    data['weight_unit'] = weightUnit;
+    data['price_list_id'] = priceListId;
+    data['category_id'] = categoryId;
+    data['category_name'] = categoryName;
     return data;
   }
 }
@@ -127,13 +243,14 @@ class PickupRequestAddress {
   String? latitude;
   String? pincode;
 
-  PickupRequestAddress(
-      {this.locationType,
-        this.locality,
-        this.addressLine,
-        this.longitude,
-        this.latitude,
-        this.pincode});
+  PickupRequestAddress({
+    this.locationType,
+    this.locality,
+    this.addressLine,
+    this.longitude,
+    this.latitude,
+    this.pincode,
+  });
 
   PickupRequestAddress.fromJson(Map<String, dynamic> json) {
     locationType = json['location_type'];
@@ -145,13 +262,13 @@ class PickupRequestAddress {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['location_type'] = this.locationType;
-    data['locality'] = this.locality;
-    data['address_line'] = this.addressLine;
-    data['longitude'] = this.longitude;
-    data['latitude'] = this.latitude;
-    data['pincode'] = this.pincode;
+    final Map<String, dynamic> data = Map<String, dynamic>();
+    data['location_type'] = locationType;
+    data['locality'] = locality;
+    data['address_line'] = addressLine;
+    data['longitude'] = longitude;
+    data['latitude'] = latitude;
+    data['pincode'] = pincode;
     return data;
   }
 }

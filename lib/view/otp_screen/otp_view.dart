@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -35,7 +33,7 @@ class OtpView extends StatelessWidget {
                         Padding(
                             padding: EdgeInsets.only(left: 1),
                             child: Text(
-                              AppConstants.otpVerification,
+                              "otpVerification".tr,
                               style: TextStyle(
                                   fontFamily: "Poppins",
                                   color: darkGreenColor,
@@ -44,7 +42,7 @@ class OtpView extends StatelessWidget {
                             )),
                         const SizedBox(height: 20),
                         Text(
-                          AppConstants.otpSubText,
+                          "otpSubText".tr,
                           style: TextStyle(
                               fontFamily: "Poppins",
                               color: textSubColor,
@@ -56,7 +54,7 @@ class OtpView extends StatelessWidget {
                           children: [
                             Expanded(
                               child: Text(
-                                "+91-9636998763",
+                                controller.phoneNumber,
                                 style: TextStyle(
                                     fontFamily: "Poppins",
                                     color: darkGreenColor,
@@ -114,7 +112,7 @@ class OtpView extends StatelessWidget {
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                    Text(
-                                    AppConstants.didntReceiveOTP,
+                                    "didntReceiveOTP".tr,
                                     style: TextStyle(
                                         fontSize: 14,
                                         color: textSubColor,
@@ -139,7 +137,7 @@ class OtpView extends StatelessWidget {
                                         controller.update();
                                       },
                                         child:  Text(
-                                          AppConstants.resend,
+                                          "resend".tr,
                                           style: TextStyle(
                                             color: controller.enableResend.value?primaryColor:textSubColor, fontWeight: FontWeight.w500,
                                               fontSize: 14, fontFamily: "Poppins"),
@@ -182,7 +180,7 @@ class OtpView extends StatelessWidget {
             ),
           ),
         ),
-        title: Text(AppConstants.otpVerification, style: TextStyle(
+        title: Text("otpVerification".tr, style: TextStyle(
             fontSize: 16,
             fontFamily: "Poppins",
             color: darkGreenColor,
@@ -214,7 +212,7 @@ class OtpView extends StatelessWidget {
               alignment: Alignment.center,
               height: 50,
               child: Text(
-                AppConstants.continue_text,
+                "continue_text".tr,
                 style: TextStyle(
                     fontSize: 16,
                     color: darkGreenColor,

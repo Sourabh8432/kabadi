@@ -1,14 +1,14 @@
 class EditProfile {
   int? status;
   String? message;
-  Data? data;
+  EditProfileData? data;
 
   EditProfile({this.status, this.message, this.data});
 
   EditProfile.fromJson(Map<String, dynamic> json) {
     status = json['status'];
     message = json['message'];
-    data = json['data'] != null ? new Data.fromJson(json['data']) : null;
+    data = json['data'] != null ? new EditProfileData.fromJson(json['data']) : null;
   }
 
   Map<String, dynamic> toJson() {
@@ -22,15 +22,15 @@ class EditProfile {
   }
 }
 
-class Data {
+class EditProfileData {
   String? name;
   String? email;
   String? mobile;
   String? location;
 
-  Data({this.name, this.email, this.mobile, this.location});
+  EditProfileData({this.name, this.email, this.mobile, this.location});
 
-  Data.fromJson(Map<String, dynamic> json) {
+  EditProfileData.fromJson(Map<String, dynamic> json) {
     name = json['name'];
     email = json['email'];
     mobile = json['mobile'];

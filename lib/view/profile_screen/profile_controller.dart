@@ -8,6 +8,7 @@ import '../../models/profile_models.dart';
 import '../../utils/app_prefrences.dart';
 class ProfileController extends GetxController {
   RxBool isLoading = false.obs;
+  RxString profileImage = "".obs;
   ProfileData? profileList;
 
 
@@ -16,9 +17,15 @@ class ProfileController extends GetxController {
   void onInit() {
     // TODO: implement onInit
     super.onInit();
+    getProfileImage();
+    profileApi();
+
   }
 
-
+  getProfileImage()async{
+    profileImage.value = await AppPrefrence.getString("profile_image");
+    update();
+  }
 
   void showLoading() {
     isLoading(true);
@@ -35,13 +42,17 @@ class ProfileController extends GetxController {
       showLoading();
       final url = Uri.parse(Url.profileUrl);
       final response = await http.get(url,
-        headers: {'Authorization': "Bearer ${await AppPrefrence.getString('token')}", 'Accept' : 'application/json'},
+        headers: {'Authorization': "Bearer ${await AppPrefrence.getString('token')}",
+          'Accept' : 'application/json'},
           );
       hideLoading();
       ProfileModel profileModel = ProfileModel.fromJson(jsonDecode(response.body));
+      print("profileApi ${jsonEncode(profileModel)} ");
+      
       if (profileModel.status == 1) {
         profileList = profileModel.data;
-
+        AppPrefrence.putString("profile_image", profileModel.data?.image ?? "");
+        update();
         print("message : ${profileModel.message}");
       } else {
         print("message : ${profileModel.message}");

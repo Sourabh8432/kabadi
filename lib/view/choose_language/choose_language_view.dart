@@ -31,7 +31,7 @@ class ChooseLanguageView extends StatelessWidget {
                             Align(
                                 alignment: Alignment.centerLeft,
                                 child: Text(
-                                  AppConstants.chooseLanguage,
+                                  "chooseLanguage".tr,
                                   style: TextStyle(
                                       fontFamily: "Poppins",
                                       color: darkGreenColor,
@@ -40,7 +40,7 @@ class ChooseLanguageView extends StatelessWidget {
                                 )),
                             const SizedBox(height: 15),
                             Text(
-                              AppConstants.chooseLanguageSubText,
+                              "chooseLanguageSubText".tr,
                               style: TextStyle(
                                   fontFamily: "Poppins",
                                   color: textSubColor,
@@ -57,7 +57,7 @@ class ChooseLanguageView extends StatelessWidget {
                                     children: [
                                       GestureDetector(onTap:() {
                                         controller.isCheck.value = 0;
-                                        controller.update();
+                                        controller.updateLanguage(const Locale('en', 'US'));
                                       },
                                         child: Container(
                                           height: 120,
@@ -78,7 +78,7 @@ class ChooseLanguageView extends StatelessWidget {
                                       ),
                                       const SizedBox(height: 5,),
                                       Text(
-                                        AppConstants.english,
+                                        "english".tr,
                                         style: TextStyle(
                                             fontFamily: "Poppins",
                                             color: controller.isCheck.value== true?darkGreenColor:textSubColor,
@@ -94,7 +94,8 @@ class ChooseLanguageView extends StatelessWidget {
                                       GestureDetector(
                                         onTap:() {
                                           controller.isCheck.value = 1;
-                                          controller.update();
+                                          controller.updateLanguage(const Locale('hi', 'IN'));
+                                          // controller.changeLanguage(const Locale('hi', 'IN'));
                                         },
                                         child: Container(
                                           height: 120,
@@ -115,7 +116,7 @@ class ChooseLanguageView extends StatelessWidget {
                                       ),
                                       const SizedBox(height: 5,),
                                       Text(
-                                        AppConstants.hindi,
+                                        AppConstants.hindi.tr,
                                         style: TextStyle(
                                             fontFamily: "Poppins",
                                             color: controller.isCheck.value== false?darkGreenColor:textSubColor,
@@ -153,7 +154,7 @@ class ChooseLanguageView extends StatelessWidget {
               alignment: Alignment.center,
               height: 50,
               child: Text(
-                AppConstants.selectProceed,
+                "selectProceed".tr,
                 style: TextStyle(
                     fontSize: 16,
                     color: darkGreenColor,

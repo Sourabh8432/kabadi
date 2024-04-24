@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'package:kabadi_app/routes/app_pages.dart';
+import 'package:kabadi_app/view/choose_language/choose_language_controller.dart';
+
+import 'launguage/launguage.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -11,6 +16,8 @@ void main() {
   runApp(const MyApp());
 }
 
+
+
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
@@ -18,6 +25,8 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
+
+
       builder: (context, child) {
         return MediaQuery(
           data: MediaQuery.of(context).copyWith(textScaler: TextScaler.noScaling),
@@ -33,10 +42,14 @@ class MyApp extends StatelessWidget {
         ),
         brightness: Brightness.light,
       ),
-
+      initialBinding: BindingsBuilder(() {
+        Get.lazyPut(() => ChooseLanguageController());
+      }),
+      translations: LocaleString(),
+      locale: const Locale('en', 'US'),
       scrollBehavior: const MaterialScrollBehavior(),
       debugShowCheckedModeBanner: false,
-      title: 'Kabadi',
+      title: 'Kabadi'.tr,
       initialRoute: Routes.splashView,
       getPages: AppPages.routes,
     );

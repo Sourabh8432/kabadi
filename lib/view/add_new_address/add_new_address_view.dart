@@ -1,11 +1,11 @@
-import 'dart:ffi';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:get/get_state_manager/src/simple/get_state.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:pinput/pinput.dart';
 
 import '../../routes/app_pages.dart';
 import '../../utils/app_colors.dart';
@@ -21,143 +21,184 @@ class AddNewAddressView extends StatelessWidget {
     return GetBuilder<AddNewAddressController>(
         init: AddNewAddressController(),
         builder: (controller) {
-          print( "markerLocation: ${controller.markerLocation.latitude}, Lng: ${controller.markerLocation.longitude}");
+          print(
+              "markerLocation: ${controller.markerLocation.latitude}, Lng: ${controller.markerLocation.longitude}");
           return Scaffold(
             body: Stack(
-              alignment: Alignment.topCenter,
               children: [
-                GoogleMap(
-                  onMapCreated: (myController) {
-                    _onMapCreated(myController);
-                  },
-                  initialCameraPosition: CameraPosition(
-                    target: controller.markerLocation,
-                    zoom: 10,
-                  ),
-                  markers: <Marker>{
-                    Marker(
-                      markerId: const MarkerId("1"),
-                      position: controller.markerLocation,
-                      infoWindow: InfoWindow(
-                        title: "Marker",
-                        snippet:
-                        "Lat: ${controller.markerLocation.latitude}, Lng: ${controller.markerLocation.longitude}",
+                Stack(
+                  alignment: Alignment.topCenter,
+                  children: [
+                    GoogleMap(
+                      onMapCreated: (controller) {
+                        _onMapCreated(controller);
+                      },
+                      initialCameraPosition: CameraPosition(
+                        target: controller
+                            .markerLocation, // Use markerLocation as initial position
+                        zoom: 10,
                       ),
-                      onTap: () {
-                        _onMapTap(controller.markerLocation);
+                      markers: <Marker>{
+                        Marker(
+                          markerId: const MarkerId("1"),
+                          position: controller
+                              .markerLocation, // Update marker position here
+                          infoWindow: InfoWindow(
+                            title: "Marker",
+                            snippet:
+                                "Lat: ${controller.markerLocation.latitude}, Lng: ${controller.markerLocation.longitude}",
+                          ),
+                          onTap: () {
+                            _onMapTap(controller.markerLocation);
+                          },
+                        ),
+                      },
+                      circles: <Circle>{
+                        Circle(
+                          circleId: const CircleId("radius"),
+                          center: controller.markerLocation,
+                          radius: 500,
+                          fillColor: Colors.red.withOpacity(0.2),
+                          strokeColor: Colors.red,
+                          strokeWidth: 2,
+                        ),
+                      },
+                      onTap: _onMapTap,
+                      zoomControlsEnabled: false,
+
+                      // Update camera position to focus on marker whenever markerLocation changes
+                      onCameraMove: (CameraPosition position) {
+                        controller.markerLocation = position.target;
+                        controller.update();
                       },
                     ),
-                  },
-                  circles: <Circle>{
-                    Circle(
-                      circleId: const CircleId("radius"),
-                      center: controller.markerLocation,
-                      radius: 500,
-                      fillColor: Colors.red.withOpacity(0.2),
-                      strokeColor: Colors.red,
-                      strokeWidth: 2,
-                    ),
-                  },
-                  onTap: _onMapTap, // Disable map tap when dataCount is 60
-                  zoomControlsEnabled: false,
-                ),
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Container(
-                      alignment: Alignment.bottomLeft,
-                      height: 111,
-                      padding: const EdgeInsets.only(bottom: 15),
-                      decoration: BoxDecoration(
-                          image: DecorationImage(
-                              image: AssetImage(AppImages.pickupAppbar),
-                              fit: BoxFit.fill)),
-                      child: Row(
-                        children: [
-                          GestureDetector(
-                            onTap: () {
-                              Get.back();
-                            },
-                            child: Container(
-                              margin:
-                                  const EdgeInsets.symmetric(horizontal: 20),
-                              child: SvgPicture.asset(
-                                AppImages.backArrow,
-                                color: whiteColor,
-                              ),
-                            ),
-                          ),
-                          const SizedBox(
-                            width: 15,
-                          ),
-                          Text(AppConstants.setLocation,
-                              style: TextStyle(
-                                  fontSize: 18,
-                                  fontFamily: "Poppins",
-                                  color: whiteColor,
-                                  fontWeight: FontWeight.w600)),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 30,
-                    ),
-                    Container(
-                      margin: const EdgeInsets.symmetric(horizontal: 20),
-                      decoration: BoxDecoration(
-                          color: Colors.white,
-                          border: Border.all(width: 1, color: borderColor),
-                          borderRadius: BorderRadius.circular(100)),
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: TextField(
-                              // controller: controller.yourName,
-                              style: const TextStyle(
-                                  fontSize: 18, letterSpacing: 1.6),
-                              decoration: InputDecoration(
-                                prefixIcon: Icon(
-                                  Icons.search,
-                                  size: 20,
-                                  color: darkGreenColor,
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Container(
+                          alignment: Alignment.bottomLeft,
+                          height: 111,
+                          padding: const EdgeInsets.only(bottom: 15),
+                          decoration: BoxDecoration(
+                              image: DecorationImage(
+                                  image: AssetImage(AppImages.pickupAppbar),
+                                  fit: BoxFit.fill)),
+                          child: Row(
+                            children: [
+                              GestureDetector(
+                                onTap: () {
+                                  Get.back();
+                                },
+                                child: Container(
+                                  margin:
+                                      const EdgeInsets.symmetric(horizontal: 20),
+                                  child: SvgPicture.asset(
+                                    AppImages.backArrow,
+                                    color: whiteColor,
+                                  ),
                                 ),
-                                border: InputBorder.none,
-                                hintText: "${controller.mapLatitude.value}, ${controller.mapLongitude.value}",
-                                hintStyle: TextStyle(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w400,
-                                    color: textSubColor),
                               ),
+                              const SizedBox(
+                                width: 15,
+                              ),
+                              Text("setLocation".tr,
+                                  style: TextStyle(
+                                      fontSize: 18,
+                                      fontFamily: "Poppins",
+                                      color: whiteColor,
+                                      fontWeight: FontWeight.w600)),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 30,
+                        ),
+                        Container(
+                          margin: const EdgeInsets.symmetric(horizontal: 20),
+                          padding: EdgeInsets.only(left: 20),
+                          decoration: BoxDecoration(
+                              color: Colors.white,
+                              border: Border.all(width: 1, color: borderColor),
+                              borderRadius: BorderRadius.circular(100)),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: TextField(
+                                  controller: controller.searchAddress,
+                                  style: const TextStyle(
+                                      fontSize: 18, letterSpacing: 1.6),
+                                  onChanged: (value) {
+                                    controller.getSearchAddress(value);
+
+
+                                  },
+                                  decoration: InputDecoration(
+
+                                    suffixIcon: InkWell( onTap: () =>  controller.getSearchAddress(controller.searchAddress.text.toString()),
+                                      child: Icon(
+                                        Icons.search,
+                                        size: 20,
+                                        color: darkGreenColor,
+                                      ),
+                                    ),
+                                    border: InputBorder.none,
+                                    hintText:
+                                        "${controller.mapLatitude.value}, ${controller.mapLongitude.value}",
+                                    hintStyle: TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w400,
+                                        color: textSubColor),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Spacer(),
+                        GestureDetector(
+                          onTap: () {
+                            controller.localityController.clear();
+                            controller.addressController.clear();
+                            controller.enterAddress();
+                            Future.delayed(const Duration(microseconds: 200),(){
+                              _showBottomSheet(context, controller);
+                            });
+
+                          },
+                          child: Container(
+                            margin: const EdgeInsets.symmetric(
+                                horizontal: 20, vertical: 20),
+                            decoration: BoxDecoration(
+                                borderRadius: const BorderRadius.all(
+                                  Radius.circular(50),
+                                ),
+                                color: primaryColor),
+                            alignment: Alignment.center,
+                            height: 50,
+                            child: Text(
+                              "continue_text".tr,
+                              style: TextStyle(
+                                  fontSize: 16,
+                                  color: darkGreenColor,
+                                  fontFamily: "MPLUS",
+                                  fontWeight: FontWeight.w500),
                             ),
                           ),
-                        ],
-                      ),
-                    ),
-                    Spacer(),
-                    GestureDetector(
-                      onTap: () => _showBottomSheet(context, controller),
-                      child: Container(
-                        margin: const EdgeInsets.symmetric(
-                            horizontal: 20, vertical: 20),
-                        decoration: BoxDecoration(
-                            borderRadius: const BorderRadius.all(
-                              Radius.circular(50),
-                            ),
-                            color: primaryColor),
-                        alignment: Alignment.center,
-                        height: 50,
-                        child: Text(
-                          AppConstants.continue_text,
-                          style: TextStyle(
-                              fontSize: 16,
-                              color: darkGreenColor,
-                              fontFamily: "MPLUS",
-                              fontWeight: FontWeight.w500),
                         ),
-                      ),
+                      ],
                     ),
                   ],
                 ),
+                if (controller.isLoading.value)
+                  Container(
+                    width: Get.width,
+                    height: Get.height,
+                    color: whiteColor.withOpacity(0.4),
+                    child: Center(
+                      child: CircularProgressIndicator(
+                          color: primaryColor, backgroundColor: whiteColor),
+                    ),
+                  )
               ],
             ),
           );
@@ -181,7 +222,8 @@ class AddNewAddressView extends StatelessWidget {
         "Marker tapped at: ${addNewAddressController.mapLatitude.value}, ${addNewAddressController.mapLongitude.value}");
   }
 
-  void _showBottomSheet(BuildContext context, controller) {
+  void _showBottomSheet(
+      BuildContext context, AddNewAddressController controller) {
     showModalBottomSheet(
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
@@ -227,7 +269,7 @@ class AddNewAddressView extends StatelessWidget {
                   Align(
                     alignment: Alignment.centerLeft,
                     child: Text(
-                      AppConstants.addAddress,
+                      "addAddress".tr,
                       style: TextStyle(
                           fontSize: 20,
                           fontFamily: "Poppins",
@@ -238,7 +280,7 @@ class AddNewAddressView extends StatelessWidget {
                   Align(
                     alignment: Alignment.centerLeft,
                     child: Text(
-                      AppConstants.addAddressSubTitle,
+                      "addAddressSubTitle".tr,
                       style: TextStyle(
                           fontSize: 14,
                           fontFamily: "Poppins",
@@ -252,7 +294,7 @@ class AddNewAddressView extends StatelessWidget {
                   Align(
                     alignment: Alignment.centerLeft,
                     child: Text(
-                      AppConstants.yourLocation,
+                      "yourLocation".tr,
                       style: TextStyle(
                           fontSize: 14,
                           fontFamily: "Poppins",
@@ -264,7 +306,7 @@ class AddNewAddressView extends StatelessWidget {
                   Align(
                     alignment: Alignment.centerLeft,
                     child: Text(
-                      "Jhotwara, Jaipur",
+                      controller.address.value.toString(),
                       style: TextStyle(
                           fontSize: 18,
                           fontFamily: "Poppins",
@@ -278,40 +320,56 @@ class AddNewAddressView extends StatelessWidget {
                     child: ListView.builder(
                       shrinkWrap: true,
                       physics: const NeverScrollableScrollPhysics(),
-                      itemCount: 5,
+                      itemCount: controller.addressList.length,
                       scrollDirection: Axis.horizontal,
                       itemBuilder: (context, index) {
-                        return Column(
-                          children: [
-                            Container(
-                              height: 60,
-                              width: 60,
-                              margin: const EdgeInsets.only(right: 10),
-                              decoration: const BoxDecoration(
-                                shape: BoxShape.circle,
+                        return Container(
+                          margin: const EdgeInsets.only(right: 10),
+                          child: Column(crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              InkWell(onTap: (){
+                                controller.addressList[index]["isCheck"] = index;
+
+                                controller.locationType.value = controller.addressList[index]["name"];
+                                controller.update();
+                                print("object : $index");
+                                print("isCheck : ${controller.addressList[index]["name"]}");
+                              },
+                                child: Container(
+                                  height: 60,
+                                  width: 60,
+                                  alignment: Alignment.center,
+
+                                  decoration:  BoxDecoration(
+                                    border: Border.all(color: controller.addressList[index]["isCheck"] == index?Colors.blue:Colors.black,width: 3),
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: SvgPicture.asset(
+                                    height: 50,
+                                    width: 50,
+                                    controller.addressList[index]["image"].toString(),
+                                  ),
+                                ),
                               ),
-                              child: SvgPicture.asset(
-                                height: 40,
-                                width: 40,
-                                AppImages.addCatogary,
+                              const SizedBox(
+                                height: 5,
                               ),
-                            ),
-                            const SizedBox(
-                              height: 5,
-                            ),
-                            Text(
-                              "Office",
-                              style: TextStyle(
-                                  fontSize: 14,
-                                  fontFamily: "Poppins",
-                                  color: darkGreenColor,
-                                  fontWeight: FontWeight.w600),
-                            ),
-                          ],
+                              Text(
+                                controller.addressList[index]["name"].toString(),
+                                style: TextStyle(
+                                    fontSize: 12,
+                                    fontFamily: "Poppins",
+                                    color: darkGreenColor,
+                                    fontWeight: FontWeight.w400),
+                              ),
+                            ],
+                          ),
                         );
                       },
                     ),
                   ),
+
                   const SizedBox(height: 10),
                   Padding(
                     padding: const EdgeInsets.only(left: 10),
@@ -326,18 +384,14 @@ class AddNewAddressView extends StatelessWidget {
                   ),
                   const SizedBox(height: 10),
                   Container(
+                    padding: EdgeInsets.symmetric(horizontal: 15),
                     decoration: BoxDecoration(
                         border: Border.all(color: borderColor, width: 1),
                         borderRadius: BorderRadius.circular(40)),
                     child: TextField(
-                      // controller: controller.yourName,
+                      controller: controller.localityController,
                       style: const TextStyle(fontSize: 18, letterSpacing: 1.6),
                       decoration: InputDecoration(
-                        prefixIcon: Icon(
-                          Icons.search,
-                          size: 20,
-                          color: darkGreenColor,
-                        ),
                         border: InputBorder.none,
                         hintText: "Search address ",
                         hintStyle: TextStyle(
@@ -361,18 +415,14 @@ class AddNewAddressView extends StatelessWidget {
                   ),
                   const SizedBox(height: 10),
                   Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 15),
                     decoration: BoxDecoration(
                         border: Border.all(color: borderColor, width: 1),
                         borderRadius: BorderRadius.circular(40)),
                     child: TextField(
-                      // controller: controller.yourName,
+                      controller: controller.addressController,
                       style: const TextStyle(fontSize: 18, letterSpacing: 1.6),
                       decoration: InputDecoration(
-                        prefixIcon: Icon(
-                          Icons.search,
-                          size: 20,
-                          color: darkGreenColor,
-                        ),
                         border: InputBorder.none,
                         hintText: "Sanjay Nagar B, Kalwar Road",
                         hintStyle: TextStyle(
@@ -385,7 +435,12 @@ class AddNewAddressView extends StatelessWidget {
                   const SizedBox(height: 20),
                   InkWell(
                     onTap: () {
-                      Get.toNamed(Routes.addNewAddressView);
+                     if(controller.locationType.value.isEmpty){
+                       Fluttertoast.showToast(msg: "Please choose Location Type");
+                     }else {
+                       controller.addAddress(controller.locationType.value, controller.locality.value, controller.addressLine.value, controller.pincode.value, controller.markerLocation.latitude.toString(), controller.markerLocation.latitude.toString());
+                     }
+
                     },
                     child: Container(
                       padding: const EdgeInsets.symmetric(
@@ -406,7 +461,7 @@ class AddNewAddressView extends StatelessWidget {
                             width: 10,
                           ),
                           Text(
-                            AppConstants.addNewAddress,
+                            "addNewAddress".tr,
                             style: TextStyle(
                                 fontSize: 14,
                                 fontFamily: "Poppins",
@@ -440,7 +495,7 @@ class AddNewAddressView extends StatelessWidget {
   //         alignment: Alignment.center,
   //         height: 50,
   //         child: Text(
-  //           AppConstants.pickupRequest,
+  //           AppConstants.pickupRequest.tr,
   //           style: TextStyle(
   //               fontSize: 16,
   //               color: darkGreenColor,

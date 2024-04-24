@@ -36,7 +36,7 @@ class LoginView extends StatelessWidget {
                                 Container(
                                     margin: const EdgeInsets.only(right: 30),
                                     child: Text(
-                                        AppConstants.logInSubStext,
+                                        "logInSubStext".tr,
                                       style: TextStyle(
                                           color: darkGreenColor,
                                           fontSize: 24,
@@ -47,7 +47,7 @@ class LoginView extends StatelessWidget {
                                   padding: const EdgeInsets.symmetric(
                                       horizontal: 10),
                                   child: Text(
-                                    AppConstants.phone,
+                                    "phone".tr,
                                     style: TextStyle(
                                       fontFamily: "Poppins",
                                         color: primaryColor,
@@ -128,7 +128,7 @@ class LoginView extends StatelessWidget {
             ),
           ),
         ),
-        title: Text(AppConstants.logIn, style: TextStyle(
+        title: Text("logIn".tr, style: TextStyle(
     fontSize: 18,
     fontFamily: "Poppins",
     color: darkGreenColor,
@@ -163,7 +163,7 @@ class LoginView extends StatelessWidget {
               alignment: Alignment.center,
               height: 50,
               child: Text(
-                AppConstants.continue_text,
+                "continue_text".tr,
                 style: TextStyle(
                     fontSize: 16,
                     color: darkGreenColor,

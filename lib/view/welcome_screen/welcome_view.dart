@@ -23,12 +23,12 @@ class WelcomeView extends StatelessWidget {
                         _buildWidget(),
                         const SizedBox(height: 41),
                         Padding(
-                            padding: EdgeInsets.only(left: 16),
+                            padding: const EdgeInsets.only(left: 16),
                             child: Row(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  const Text(AppConstants.welcome_text,
-                              style: TextStyle(
+                                   Text('welcome_text'.tr,
+                              style: const TextStyle(
                                   fontSize: 28,
                                   fontFamily: "Poppins",
                                   fontWeight: FontWeight.bold),
@@ -45,7 +45,7 @@ class WelcomeView extends StatelessWidget {
                         const SizedBox(height: 7),
                         Container(
                             margin: const EdgeInsets.only(left: 16, right: 46),
-                            child: Text(AppConstants.welcome_subtext,
+                            child: Text("welcome_subtext".tr,
                                 maxLines: 2,
                                 overflow: TextOverflow.ellipsis,
                                 style: TextStyle(
@@ -70,7 +70,7 @@ class WelcomeView extends StatelessWidget {
                                   alignment: Alignment.center,
                                   height: 50,
                                   child: Text(
-                                    AppConstants.logIn,
+                                    "logIn".tr,
                                     style: TextStyle(
                                       fontSize: 16,
                                         color: primaryColor,
@@ -99,7 +99,7 @@ class WelcomeView extends StatelessWidget {
                                   alignment: Alignment.center,
                                   height: 50,
                                   child: Text(
-                                    AppConstants.signUp,
+                                    "signUp".tr,
                                     style: TextStyle(
                                         fontSize: 16,
                                         color: darkGreenColor,

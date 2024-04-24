@@ -1,9 +1,11 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
@@ -20,173 +22,194 @@ class SellScrapItemView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     return GetBuilder<SellScrapItemController>(
       init: SellScrapItemController(),
       builder: (controller) {
-        return Scaffold(
-          body: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+
+        return WillPopScope(
+          onWillPop: () async {
+            if (controller.currentStep.value == 2) {
+              controller.isEdit.value = false;
+              controller.currentStep.value = 1;
+            } else if (controller.currentStep.value == 1) {
+              controller.isEdit.value = false;
+              controller.currentStep.value = 0;
+            } else {
+              Get.back();
+            }
+            controller.update();
+            return false;
+
+          },
+          child: Scaffold(
+            body: Stack(
               children: [
-                Container(
-                  alignment: Alignment.bottomLeft,
-                  height: 111,
-                  padding: const EdgeInsets.only(bottom: 15),
-                  decoration: BoxDecoration(
-                    image: DecorationImage(
-                      image: AssetImage(AppImages.pickupAppbar),
-                      fit: BoxFit.fill,
-                    ),
-                  ),
-                  child: Row(
+                SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      InkWell(
-                        onTap: () {
-                          Get.back();
-                        },
-                        child: Container(
-                          margin: const EdgeInsets.symmetric(horizontal: 20),
-                          child: SvgPicture.asset(
-                            AppImages.backArrow,
-                            color: whiteColor,
+                      Container(
+                        alignment: Alignment.bottomLeft,
+                        height: 111,
+                        padding: const EdgeInsets.only(bottom: 15),
+                        decoration: BoxDecoration(
+                          image: DecorationImage(
+                            image: AssetImage(AppImages.pickupAppbar),
+                            fit: BoxFit.fill,
                           ),
                         ),
-                      ),
-                      const SizedBox(
-                        width: 15,
-                      ),
-                      Text(
-                        AppConstants.sellScrap,
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontFamily: "Poppins",
-                          color: whiteColor,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(
-                  height: 20,
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 20),
                         child: Row(
                           children: [
-                            Container(
-                              height: 30,
-                              width: 30,
-                              alignment: Alignment.center,
-                              decoration: BoxDecoration(
-                                  color: primaryColor, shape: BoxShape.circle),
-                              child: Icon(
-                                Icons.check,
-                                color: darkGreenColor,
+                            InkWell(
+                              onTap: () {
+                                Get.back();
+                              },
+                              child: Container(
+                                margin:
+                                const EdgeInsets.symmetric(horizontal: 20),
+                                child: SvgPicture.asset(
+                                  AppImages.backArrow,
+                                  color: whiteColor,
+                                ),
                               ),
                             ),
-                            Expanded(
-                                child: Divider(
-                              color: controller.currentStep > 0
-                                  ? primaryColor
-                                  : borderColor,
-                              thickness: 4,
-                            )),
-                            Container(
-                              height: 30,
-                              width: 30,
-                              alignment: Alignment.center,
-                              decoration: BoxDecoration(
-                                  color: controller.currentStep > 0
-                                      ? primaryColor
-                                      : borderColor,
-                                  shape: BoxShape.circle),
-                              child: Icon(
-                                Icons.check,
-                                color: darkGreenColor,
-                              ),
+                            const SizedBox(
+                              width: 15,
                             ),
-                            Expanded(
-                                child: Divider(
-                              color: controller.currentStep > 1
-                                  ? primaryColor
-                                  : borderColor,
-                              thickness: 4,
-                            )),
-                            Container(
-                              height: 30,
-                              width: 30,
-                              alignment: Alignment.center,
-                              decoration: BoxDecoration(
-                                  color: controller.currentStep > 1
-                                      ? primaryColor
-                                      : borderColor,
-                                  shape: BoxShape.circle),
-                              child: Icon(
-                                Icons.check,
-                                color: darkGreenColor,
+                            Text(
+                              "sellScrap".tr,
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontFamily: "Poppins",
+                                color: whiteColor,
+                                fontWeight: FontWeight.w600,
                               ),
                             ),
                           ],
                         ),
                       ),
-                      const SizedBox(height: 10),
-                      Row(
-                        children: [
-                          SizedBox(
-                            width: 80,
-                            child: Text(
-                              "Scrap Items",
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                  fontSize: 14,
-                                  fontFamily: "Poppins",
-                                  color: darkGreenColor,
-                                  fontWeight: FontWeight.w500),
-                            ),
-                          ),
-                          const Spacer(),
-                          SizedBox(
-                            width: 80,
-                            child: Text(
-                              "Schedule Pickup",
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                  fontSize: 14,
-                                  fontFamily: "Poppins",
-                                  color: controller.currentStep > 0
-                                      ? darkGreenColor
-                                      : textSubColor,
-                                  fontWeight: FontWeight.w500),
-                            ),
-                          ),
-                          const Spacer(),
-                          SizedBox(
-                            width: 80,
-                            child: Text(
-                              "Confirm",
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                  fontSize: 14,
-                                  fontFamily: "Poppins",
-                                  color: controller.currentStep > 1
-                                      ? darkGreenColor
-                                      : textSubColor,
-                                  fontWeight: FontWeight.w500),
-                            ),
-                          ),
-                        ],
+                      const SizedBox(
+                        height: 20,
                       ),
-                    ],
-                  ),
-                ),
-                controller.currentStep == 0
-                    ? Column(
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 20),
+                              child: Row(
+                                children: [
+                                  Container(
+                                    height: 30,
+                                    width: 30,
+                                    alignment: Alignment.center,
+                                    decoration: BoxDecoration(
+                                        color: primaryColor,
+                                        shape: BoxShape.circle),
+                                    child: Icon(
+                                      Icons.check,
+                                      color: darkGreenColor,
+                                    ),
+                                  ),
+                                  Expanded(
+                                      child: Divider(
+                                        color: controller.currentStep > 0
+                                            ? primaryColor
+                                            : borderColor,
+                                        thickness: 4,
+                                      )),
+                                  Container(
+                                    height: 30,
+                                    width: 30,
+                                    alignment: Alignment.center,
+                                    decoration: BoxDecoration(
+                                        color: controller.currentStep > 0
+                                            ? primaryColor
+                                            : borderColor,
+                                        shape: BoxShape.circle),
+                                    child: Icon(
+                                      Icons.check,
+                                      color: darkGreenColor,
+                                    ),
+                                  ),
+                                  Expanded(
+                                      child: Divider(
+                                        color: controller.currentStep > 1
+                                            ? primaryColor
+                                            : borderColor,
+                                        thickness: 4,
+                                      )),
+                                  Container(
+                                    height: 30,
+                                    width: 30,
+                                    alignment: Alignment.center,
+                                    decoration: BoxDecoration(
+                                        color: controller.currentStep > 1
+                                            ? primaryColor
+                                            : borderColor,
+                                        shape: BoxShape.circle),
+                                    child: Icon(
+                                      Icons.check,
+                                      color: darkGreenColor,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            const SizedBox(height: 10),
+                            Row(
+                              children: [
+                                SizedBox(
+                                  width: 80,
+                                  child: Text(
+                                    "Scrap Items",
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                        fontSize: 14,
+                                        fontFamily: "Poppins",
+                                        color: darkGreenColor,
+                                        fontWeight: FontWeight.w500),
+                                  ),
+                                ),
+                                const Spacer(),
+                                SizedBox(
+                                  width: 80,
+                                  child: Text(
+                                    "Schedule Pickup",
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                        fontSize: 14,
+                                        fontFamily: "Poppins",
+                                        color: controller.currentStep > 0
+                                            ? darkGreenColor
+                                            : textSubColor,
+                                        fontWeight: FontWeight.w500),
+                                  ),
+                                ),
+                                const Spacer(),
+                                SizedBox(
+                                  width: 80,
+                                  child: Text(
+                                    "Confirm",
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                        fontSize: 14,
+                                        fontFamily: "Poppins",
+                                        color: controller.currentStep > 1
+                                            ? darkGreenColor
+                                            : textSubColor,
+                                        fontWeight: FontWeight.w500),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                      controller.currentStep == 0
+                          ? Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           const SizedBox(
@@ -221,22 +244,25 @@ class SellScrapItemView extends StatelessWidget {
                                 ListView.builder(
                                   padding: EdgeInsets.zero,
                                   shrinkWrap: true,
-                                  physics: const NeverScrollableScrollPhysics(),
-                                  itemCount: controller.getAllPriceList.length,
+                                  physics:
+                                  const NeverScrollableScrollPhysics(),
+                                  itemCount:
+                                  controller.getAllPriceList.length,
                                   itemBuilder: (context, index) {
-                                    int? categoryId =
-                                        controller.getAllPriceList[index].id;
+                                    int? categoryId = controller
+                                        .getAllPriceList[index].id;
                                     print(
                                         "getAllPriceList : ${controller.getAllPriceList.length}");
                                     return Column(
                                       crossAxisAlignment:
-                                          CrossAxisAlignment.start,
+                                      CrossAxisAlignment.start,
                                       children: [
                                         const SizedBox(
                                           height: 20,
                                         ),
                                         Text(
-                                          controller.getAllPriceList[index].name
+                                          controller
+                                              .getAllPriceList[index].name
                                               .toString(),
                                           style: TextStyle(
                                             fontSize: 16,
@@ -251,50 +277,64 @@ class SellScrapItemView extends StatelessWidget {
                                         SizedBox(
                                           height: 80,
                                           child: ListView.builder(
-                                            scrollDirection: Axis.horizontal,
+                                            scrollDirection:
+                                            Axis.horizontal,
                                             itemCount: controller
                                                 .getAllPriceList[index]
                                                 .subCategories
                                                 ?.length,
-                                            itemBuilder: (context, myIndex) {
-                                              GetPriceSubCategories getList =
-                                                  controller
-                                                      .getAllPriceList[index]
-                                                      .subCategories![myIndex];
+                                            itemBuilder:
+                                                (context, myIndex) {
+                                              GetPriceSubCategories
+                                              getList = controller
+                                                  .getAllPriceList[
+                                              index]
+                                                  .subCategories![
+                                              myIndex];
 
                                               bool isSelected = controller
-                                                      .selectedSubCategoryIdsMap[
-                                                          categoryId]
-                                                      ?.contains(
-                                                          getList.categoryId) ??
+                                                  .selectedSubCategoryIdsMap[
+                                              categoryId]
+                                                  ?.contains(getList
+                                                  .categoryId) ??
                                                   false;
 
                                               return InkWell(
                                                 onTap: () {
-                                                  controller
-                                                      .toggleCategorySelection(
-                                                          categoryId ?? 0,
-                                                          getList.categoryId ??
-                                                              0);
+                                                  controller.toggleCategorySelection(getList.id ?? 0, getList.categoryId ?? 0, getList.name ?? "", getList.priceUnit ?? "", getList.weightUnit ?? "",controller.submitedId);
+                                                  controller.idList = controller.submitedId.map((item) => item.id).toList();
+                                                  print("Test : ${controller.idList.runtimeType}");
+                                                  controller.myselection = controller.submitedId;
+                                                  print("TestTest : ${jsonEncode(controller.myselection)}");
                                                 },
                                                 child: Container(
-                                                  margin: const EdgeInsets.only(
+                                                  margin:
+                                                  const EdgeInsets.only(
                                                       right: 10),
                                                   padding:
-                                                      const EdgeInsets.all(10),
+                                                  const EdgeInsets.all(
+                                                      10),
                                                   decoration: BoxDecoration(
                                                       borderRadius:
-                                                          BorderRadius.circular(
-                                                              10),
+                                                      BorderRadius
+                                                          .circular(10),
                                                       border: Border.all(
-                                                          color: isSelected
+                                                          color: controller.myselection.any((element) =>
+                                                          element.id ==
+                                                              getList
+                                                                  .id) &&
+                                                              controller.myselection.any((element) =>
+                                                              element
+                                                                  .categoryId ==
+                                                                  getList
+                                                                      .categoryId)
                                                               ? primaryColor
                                                               : borderColor,
                                                           width: 1)),
                                                   child: Column(
                                                     crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .start,
+                                                    CrossAxisAlignment
+                                                        .start,
                                                     children: [
                                                       Text(
                                                           getList.name
@@ -302,12 +342,12 @@ class SellScrapItemView extends StatelessWidget {
                                                           style: TextStyle(
                                                               fontSize: 14,
                                                               fontFamily:
-                                                                  "Poppins",
+                                                              "Poppins",
                                                               color:
-                                                                  darkGreenColor,
+                                                              darkGreenColor,
                                                               fontWeight:
-                                                                  FontWeight
-                                                                      .w500)),
+                                                              FontWeight
+                                                                  .w500)),
                                                       const SizedBox(
                                                         height: 10,
                                                       ),
@@ -316,12 +356,12 @@ class SellScrapItemView extends StatelessWidget {
                                                           style: TextStyle(
                                                               fontSize: 14,
                                                               fontFamily:
-                                                                  "Poppins",
+                                                              "Poppins",
                                                               color:
-                                                                  textSubColor,
+                                                              textSubColor,
                                                               fontWeight:
-                                                                  FontWeight
-                                                                      .w400)),
+                                                              FontWeight
+                                                                  .w400)),
                                                     ],
                                                   ),
                                                 ),
@@ -342,12 +382,12 @@ class SellScrapItemView extends StatelessWidget {
                                         fontWeight: FontWeight.w500)),
                                 const SizedBox(height: 20),
                                 Row(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  crossAxisAlignment:
+                                  CrossAxisAlignment.start,
                                   children: [
                                     InkWell(
                                       onTap: () {
-                                        controller.uploadImage().then((value) {
-                                          controller.uploadImageApi();
+                                        controller.uploadImage().then((value) {controller.uploadImageApi(controller.images);
                                         });
                                       },
                                       child: Padding(
@@ -375,13 +415,14 @@ class SellScrapItemView extends StatelessWidget {
                                           return Stack(
                                             children: [
                                               Padding(
-                                                padding:
-                                                    const EdgeInsets.symmetric(
-                                                        vertical: 10,
-                                                        horizontal: 4),
+                                                padding: const EdgeInsets
+                                                    .symmetric(
+                                                    vertical: 10,
+                                                    horizontal: 4),
                                                 child: InkWell(
                                                   onTap: () {
-                                                    controller.uploadImage();
+                                                    controller
+                                                        .uploadImage();
                                                   },
                                                   child: Image.file(
                                                     image,
@@ -400,7 +441,7 @@ class SellScrapItemView extends StatelessWidget {
                                                   child: CircleAvatar(
                                                     radius: 13,
                                                     backgroundColor:
-                                                        darkGreenColor,
+                                                    darkGreenColor,
                                                     child: const Icon(
                                                       Icons.close,
                                                       color: Colors.white,
@@ -471,499 +512,530 @@ class SellScrapItemView extends StatelessWidget {
                           ),
                         ],
                       )
-                    : controller.currentStep == 1
-                        ? Padding(
-                            padding: const EdgeInsets.symmetric(
-                                vertical: 10, horizontal: 10),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 15, vertical: 10),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        "Select Pickup date",
+                          : controller.currentStep == 1
+                          ? Padding(
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 10, horizontal: 10),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 15, vertical: 10),
+                              child: Column(
+                                crossAxisAlignment:
+                                CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    "Select Pickup date",
+                                    style: TextStyle(
+                                      fontSize: 20,
+                                      fontFamily: "Poppins",
+                                      color: darkGreenColor,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 5),
+                                  Text(
+                                    "Select date for your scrap pickup.",
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                      fontFamily: "Poppins",
+                                      color: textSubColor,
+                                      fontWeight: FontWeight.w400,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 10),
+                                ],
+                              ),
+                            ),
+                            Container(
+                              height: 60,
+                              alignment: Alignment.centerLeft,
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 15),
+                              margin: const EdgeInsets.symmetric(
+                                  horizontal: 15, vertical: 10),
+                              decoration: BoxDecoration(
+                                  borderRadius:
+                                  BorderRadius.circular(40),
+                                  border: Border.all(
+                                      color: lightGreenColor)),
+                              child: InkWell(
+                                onTap: () async {
+                                  DateList? dateList = await SellScrapItemController.getDateListApi();
+                                  if (dateList != null && dateList.data != null && dateList.data!.isNotEmpty) {
+                                    controller.selectedDate = await _showDatePickerPopup(context, dateList);
+                                    if (controller.selectedDate != null) {
+                                      controller.selectedDateTextWidget.value = controller.selectedDate!.dateText!;
+                                      controller.selectedDateWidget.value = controller.selectedDate!.date!;
+                                      controller.update();
+                                    }
+
+                                  }
+                                },
+                                child: Row(
+                                  children: [
+                                    Text(
+                                        controller.selectedDate != null
+                                            ? controller.selectedDateTextWidget.value
+                                            : 'Select a date',
                                         style: TextStyle(
-                                          fontSize: 20,
-                                          fontFamily: "Poppins",
-                                          color: darkGreenColor,
-                                          fontWeight: FontWeight.w500,
-                                        ),
-                                      ),
-                                      const SizedBox(height: 5),
-                                      Text(
-                                        "Select date for your scrap pickup.",
-                                        style: TextStyle(
-                                          fontSize: 14,
-                                          fontFamily: "Poppins",
-                                          color: textSubColor,
-                                          fontWeight: FontWeight.w400,
-                                        ),
-                                      ),
-                                      const SizedBox(height: 10),
-                                    ],
+                                            fontSize: 16,
+                                            fontFamily: "Poppins",
+                                            color: darkGreenColor,
+                                            fontWeight:
+                                            FontWeight.w400)),
+                                    Spacer(),
+                                    const Icon(Icons.arrow_drop_down)
+                                  ],
+                                ),
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 15, vertical: 10),
+                              child: SizedBox(
+                                child: Text(
+                                  "Pickup time between 10am-6pm. Our Pickup executive will contact you before arriving.",
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    fontFamily: "Poppins",
+                                    color: textSubColor,
+                                    fontWeight: FontWeight.w400,
                                   ),
                                 ),
-                                Container(
-                                  height: 60,
-                                  alignment: Alignment.centerLeft,
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 15),
-                                  margin: const EdgeInsets.symmetric(
-                                      horizontal: 15, vertical: 10),
-                                  decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(40),
-                                      border:
-                                          Border.all(color: lightGreenColor)),
-                                  child: InkWell(
-                                    onTap: () async {
-                                      DateList? dateList =
-                                          await SellScrapItemController.getDateListApi();
-
-                                      if (dateList != null && dateList.data != null && dateList.data!.isNotEmpty) {
-                                        controller.selectedDate = await _showDatePickerPopup(context, dateList);
-                                        if (controller.selectedDate != null) {
-                                          controller.selectedDate = controller.selectedDate; // Update selectedDate in controller
-                                          controller.update(); // Trigger UI update
-                                        }
-                                      }
-                                    },
+                              ),
+                            ),
+                          ],
+                        ),
+                      )
+                          : Padding(
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 10, horizontal: 10),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 15, vertical: 10),
+                              child: Column(
+                                crossAxisAlignment:
+                                CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    "Confirm Pickup",
+                                    style: TextStyle(
+                                      fontSize: 20,
+                                      fontFamily: "Poppins",
+                                      color: darkGreenColor,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 5),
+                                  Text(
+                                    "Confirm your scrap pickup details.",
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                      fontFamily: "Poppins",
+                                      color: textSubColor,
+                                      fontWeight: FontWeight.w400,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 10),
+                                ],
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 15, vertical: 10),
+                              child: Column(
+                                children: [
+                                  Padding(
+                                    padding:
+                                    const EdgeInsets.only(top: 15),
                                     child: Row(
                                       children: [
-                                        Text( controller.selectedDate != null
-                                            ? controller.selectedDate!.toString()
-                                            : 'Select a date',
-                                            style: TextStyle(
-                                                fontSize: 16,
-                                                fontFamily: "Poppins",
-                                                color: darkGreenColor,
-                                                fontWeight: FontWeight.w400)),
-                                        Spacer(),
-                                        const Icon(Icons.arrow_drop_down)
+                                        Text(
+                                          "Scrap Items :",
+                                          style: TextStyle(
+                                            fontSize: 16,
+                                            fontFamily: "Poppins",
+                                            color: darkGreenColor,
+                                            fontWeight: FontWeight.w600,
+                                          ),
+                                        ),
+                                        const Spacer(),
+                                        InkWell(
+                                          onTap: () {
+                                            controller.currentStep.value = 0;
+                                            controller.isEdit.value = true;
+                                            controller.update();
+                                          },
+                                          child: Container(
+                                            height: 30,
+                                            alignment: Alignment.center,
+                                            padding: const EdgeInsets.symmetric(horizontal: 15),
+                                            decoration: BoxDecoration(
+                                              borderRadius: BorderRadius.circular(40),
+                                              border: Border.all(color: primaryColor, width: 1),
+                                            ),
+                                            child: Row(
+                                              children: [
+                                                Icon(
+                                                  Icons.edit,
+                                                  color: darkGreenColor,
+                                                  size: 18,
+                                                ),
+                                                const SizedBox(
+                                                    width: 10),
+                                                Text(
+                                                  "Edit",
+                                                  style: TextStyle(
+                                                    fontSize: 12,
+                                                    fontFamily:
+                                                    "Poppins",
+                                                    color:
+                                                    darkGreenColor,
+                                                    fontWeight:
+                                                    FontWeight.w400,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
                                       ],
                                     ),
                                   ),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 15, vertical: 10),
-                                  child: SizedBox(
+                                  ListView.builder(shrinkWrap: true,physics: const NeverScrollableScrollPhysics(),
+                                    padding: EdgeInsets.zero,
+                                    itemCount: controller.myselection.length,itemBuilder: (context, index) {
+                                    return Padding(
+                                      padding:
+                                      const EdgeInsets.only(top: 15),
+                                      child: Row(
+                                        children: [
+                                          Text(
+                                            controller.submitedId[index].name.toString(),
+                                            style: TextStyle(
+                                              fontSize: 14,
+                                              fontFamily: "Poppins",
+                                              color: textSubColor,
+                                              fontWeight: FontWeight.w500,
+                                            ),
+                                          ),
+                                          const Spacer(),
+                                          Text(
+                                            "₹${controller.submitedId[index].priceUnit.toString()}/${controller.submitedId[index].weightUnit.toString()}",
+                                            style: TextStyle(
+                                              fontSize: 14,
+                                              fontFamily: "Poppins",
+                                              color: textSubColor,
+                                              fontWeight: FontWeight.w400,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    );
+                                  },)
+                                ],
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 15, vertical: 10),
+                              child: Column(
+                                children: [
+                                  Padding(
+                                    padding:
+                                    const EdgeInsets.only(top: 15),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                      CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          "Uploaded Pictures :",
+                                          style: TextStyle(
+                                            fontSize: 16,
+                                            fontFamily: "Poppins",
+                                            color: darkGreenColor,
+                                            fontWeight: FontWeight.w600,
+                                          ),
+                                        ),
+                                        const SizedBox(
+                                          height: 15,
+                                        ),
+                                        SizedBox(
+                                          height: 120,
+                                          child: ListView.builder(
+                                            scrollDirection:
+                                            Axis.horizontal,
+                                            itemCount: controller.getUploadImageUrl.length,
+                                            itemBuilder:
+                                                (context, index) {
+                                              return Container(
+                                                margin: const EdgeInsets
+                                                    .only(right: 10),
+                                                child:Image.network( controller.getUploadImageUrl[index].toString(),
+                                                  fit: BoxFit.cover,
+                                                  height: 110,
+                                                  width: 110,
+                                                  errorBuilder: (context, error, stackTrace) {
+                                                    return Container(alignment: Alignment.center,height: 100, width: 100,decoration: BoxDecoration(color: Colors.black12,borderRadius: BorderRadius.circular(15)),child: Text("No Image",style: TextStyle(fontSize: 10),),);
+                                                  },
+                                                ),
+                                              );
+                                            },
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 15, vertical: 10),
+                              child: Column(
+                                crossAxisAlignment:
+                                CrossAxisAlignment.start,
+                                children: [
+                                  Padding(
+                                    padding:
+                                    const EdgeInsets.only(top: 15),
+                                    child: Row(
+                                      children: [
+                                        Text(
+                                          "Address :",
+                                          style: TextStyle(
+                                            fontSize: 16,
+                                            fontFamily: "Poppins",
+                                            color: darkGreenColor,
+                                            fontWeight: FontWeight.w600,
+                                          ),
+                                        ),
+                                        const Spacer(),
+                                        InkWell(
+                                          onTap: () {},
+                                          child: Container(
+                                            height: 30,
+                                            alignment: Alignment.center,
+                                            padding: const EdgeInsets
+                                                .symmetric(
+                                                horizontal: 15),
+                                            decoration: BoxDecoration(
+                                              borderRadius:
+                                              BorderRadius.circular(
+                                                  40),
+                                              border: Border.all(
+                                                  color: primaryColor,
+                                                  width: 1),
+                                            ),
+                                            child: Row(
+                                              children: [
+                                                Icon(
+                                                  Icons.edit,
+                                                  color: darkGreenColor,
+                                                  size: 18,
+                                                ),
+                                                const SizedBox(
+                                                    width: 10),
+                                                Text(
+                                                  "Edit",
+                                                  style: TextStyle(
+                                                    fontSize: 12,
+                                                    fontFamily:
+                                                    "Poppins",
+                                                    color:
+                                                    darkGreenColor,
+                                                    fontWeight:
+                                                    FontWeight.w400,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding:
+                                    const EdgeInsets.only(top: 15),
                                     child: Text(
-                                      "Pickup time between 10am-6pm. Our Pickup executive will contact you before arriving.",
+                                      controller.myArguments[1]['address'],
                                       style: TextStyle(
-                                        fontSize: 12,
+                                        fontSize: 14,
                                         fontFamily: "Poppins",
                                         color: textSubColor,
                                         fontWeight: FontWeight.w400,
                                       ),
                                     ),
                                   ),
-                                ),
-                              ],
-                            ),
-                          )
-                        : Padding(
-                            padding: const EdgeInsets.symmetric(
-                                vertical: 10, horizontal: 10),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 15, vertical: 10),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        "Confirm Pickup",
-                                        style: TextStyle(
-                                          fontSize: 20,
-                                          fontFamily: "Poppins",
-                                          color: darkGreenColor,
-                                          fontWeight: FontWeight.w500,
+                                  Padding(
+                                    padding:
+                                    const EdgeInsets.only(top: 15),
+                                    child: Row(
+                                      children: [
+                                        Text(
+                                          "PickUp :",
+                                          style: TextStyle(
+                                            fontSize: 16,
+                                            fontFamily: "Poppins",
+                                            color: darkGreenColor,
+                                            fontWeight: FontWeight.w600,
+                                          ),
                                         ),
-                                      ),
-                                      const SizedBox(height: 5),
-                                      Text(
-                                        "Confirm your scrap pickup details.",
-                                        style: TextStyle(
-                                          fontSize: 14,
-                                          fontFamily: "Poppins",
-                                          color: textSubColor,
-                                          fontWeight: FontWeight.w400,
-                                        ),
-                                      ),
-                                      const SizedBox(height: 10),
-                                    ],
-                                  ),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 15, vertical: 10),
-                                  child: Column(
-                                    children: [
-                                      Padding(
-                                        padding: const EdgeInsets.only(top: 15),
-                                        child: Row(
-                                          children: [
-                                            Text(
-                                              "Scrap Items :",
-                                              style: TextStyle(
-                                                fontSize: 16,
-                                                fontFamily: "Poppins",
-                                                color: darkGreenColor,
-                                                fontWeight: FontWeight.w600,
-                                              ),
+                                        const Spacer(),
+                                        InkWell(
+                                          onTap: () {
+                                            controller.currentStep.value =1;
+                                            controller.isEditDate.value = true;
+                                            controller.update();
+                                          },
+                                          child: Container(
+                                            height: 30,
+                                            alignment: Alignment.center,
+                                            padding: const EdgeInsets
+                                                .symmetric(
+                                                horizontal: 15),
+                                            decoration: BoxDecoration(
+                                              borderRadius:
+                                              BorderRadius.circular(
+                                                  40),
+                                              border: Border.all(
+                                                  color: primaryColor,
+                                                  width: 1),
                                             ),
-                                            const Spacer(),
-                                            InkWell(
-                                              onTap: () {
-                                                Get.toNamed(
-                                                    Routes.rescheduleView);
-                                              },
-                                              child: Container(
-                                                height: 30,
-                                                alignment: Alignment.center,
-                                                padding:
-                                                    const EdgeInsets.symmetric(
-                                                        horizontal: 15),
-                                                decoration: BoxDecoration(
-                                                  borderRadius:
-                                                      BorderRadius.circular(40),
-                                                  border: Border.all(
-                                                      color: primaryColor,
-                                                      width: 1),
+                                            child: Row(
+                                              children: [
+                                                Icon(
+                                                  Icons.edit,
+                                                  color: darkGreenColor,
+                                                  size: 18,
                                                 ),
-                                                child: Row(
-                                                  children: [
-                                                    Icon(
-                                                      Icons.edit,
-                                                      color: darkGreenColor,
-                                                      size: 18,
-                                                    ),
-                                                    const SizedBox(width: 10),
-                                                    Text(
-                                                      "Edit",
-                                                      style: TextStyle(
-                                                        fontSize: 12,
-                                                        fontFamily: "Poppins",
-                                                        color: darkGreenColor,
-                                                        fontWeight:
-                                                            FontWeight.w400,
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.only(top: 15),
-                                        child: Row(
-                                          children: [
-                                            Text(
-                                              "Soft Plastic",
-                                              style: TextStyle(
-                                                fontSize: 14,
-                                                fontFamily: "Poppins",
-                                                color: textSubColor,
-                                                fontWeight: FontWeight.w500,
-                                              ),
-                                            ),
-                                            const Spacer(),
-                                            Text(
-                                              "₹12/kg",
-                                              style: TextStyle(
-                                                fontSize: 14,
-                                                fontFamily: "Poppins",
-                                                color: textSubColor,
-                                                fontWeight: FontWeight.w400,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.only(top: 15),
-                                        child: Row(
-                                          children: [
-                                            Text(
-                                              "Soft Plastic",
-                                              style: TextStyle(
-                                                fontSize: 14,
-                                                fontFamily: "Poppins",
-                                                color: textSubColor,
-                                                fontWeight: FontWeight.w500,
-                                              ),
-                                            ),
-                                            const Spacer(),
-                                            Text(
-                                              "₹12/kg",
-                                              style: TextStyle(
-                                                fontSize: 14,
-                                                fontFamily: "Poppins",
-                                                color: textSubColor,
-                                                fontWeight: FontWeight.w400,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.only(top: 15),
-                                        child: Row(
-                                          children: [
-                                            Text(
-                                              "Soft Plastic",
-                                              style: TextStyle(
-                                                fontSize: 14,
-                                                fontFamily: "Poppins",
-                                                color: textSubColor,
-                                                fontWeight: FontWeight.w500,
-                                              ),
-                                            ),
-                                            const Spacer(),
-                                            Text(
-                                              "₹12/kg",
-                                              style: TextStyle(
-                                                fontSize: 14,
-                                                fontFamily: "Poppins",
-                                                color: textSubColor,
-                                                fontWeight: FontWeight.w400,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.only(top: 15),
-                                        child: Row(
-                                          children: [
-                                            Text(
-                                              "Soft Plastic",
-                                              style: TextStyle(
-                                                fontSize: 14,
-                                                fontFamily: "Poppins",
-                                                color: textSubColor,
-                                                fontWeight: FontWeight.w500,
-                                              ),
-                                            ),
-                                            const Spacer(),
-                                            Text(
-                                              "₹12/kg",
-                                              style: TextStyle(
-                                                fontSize: 14,
-                                                fontFamily: "Poppins",
-                                                color: textSubColor,
-                                                fontWeight: FontWeight.w400,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 15, vertical: 10),
-                                  child: Column(
-                                    children: [
-                                      Padding(
-                                        padding: const EdgeInsets.only(top: 15),
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                              "Uploaded Pictures :",
-                                              style: TextStyle(
-                                                fontSize: 16,
-                                                fontFamily: "Poppins",
-                                                color: darkGreenColor,
-                                                fontWeight: FontWeight.w600,
-                                              ),
-                                            ),
-                                            const SizedBox(
-                                              height: 15,
-                                            ),
-                                            SizedBox(
-                                              height: 120,
-                                              child: ListView.builder(
-                                                scrollDirection:
-                                                    Axis.horizontal,
-                                                itemCount: 10,
-                                                itemBuilder: (context, index) {
-                                                  return Container(
-                                                    margin:
-                                                        const EdgeInsets.only(
-                                                            right: 10),
-                                                    child: Image.asset(
-                                                      AppImages.imgRectangle35,
-                                                      height: 110,
-                                                      width: 110,
-                                                    ),
-                                                  );
-                                                },
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 15, vertical: 10),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Padding(
-                                        padding: const EdgeInsets.only(top: 15),
-                                        child: Row(
-                                          children: [
-                                            Text(
-                                              "Address :",
-                                              style: TextStyle(
-                                                fontSize: 16,
-                                                fontFamily: "Poppins",
-                                                color: darkGreenColor,
-                                                fontWeight: FontWeight.w600,
-                                              ),
-                                            ),
-                                            const Spacer(),
-                                            InkWell(
-                                              onTap: () {},
-                                              child: Container(
-                                                height: 30,
-                                                alignment: Alignment.center,
-                                                padding:
-                                                    const EdgeInsets.symmetric(
-                                                        horizontal: 15),
-                                                decoration: BoxDecoration(
-                                                  borderRadius:
-                                                      BorderRadius.circular(40),
-                                                  border: Border.all(
-                                                      color: primaryColor,
-                                                      width: 1),
-                                                ),
-                                                child: Row(
-                                                  children: [
-                                                    Icon(
-                                                      Icons.edit,
-                                                      color: darkGreenColor,
-                                                      size: 18,
-                                                    ),
-                                                    const SizedBox(width: 10),
-                                                    Text(
-                                                      "Edit",
-                                                      style: TextStyle(
-                                                        fontSize: 12,
-                                                        fontFamily: "Poppins",
-                                                        color: darkGreenColor,
-                                                        fontWeight:
-                                                            FontWeight.w400,
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.only(top: 15),
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                              "Sunday, 4 February, 2024",
-                                              style: TextStyle(
-                                                fontSize: 14,
-                                                fontFamily: "Poppins",
-                                                color: darkGreenColor,
-                                                fontWeight: FontWeight.w500,
-                                              ),
-                                            ),
-                                            Text(
-                                              "10 AM - 6 PM",
-                                              style: TextStyle(
-                                                fontSize: 12,
-                                                fontFamily: "Poppins",
-                                                color: textSubColor,
-                                                fontWeight: FontWeight.w400,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                      const SizedBox(
-                                        height: 15,
-                                      ),
-                                      Text(
-                                        "Any Instructions",
-                                        style: TextStyle(
-                                          fontSize: 14,
-                                          fontFamily: "Poppins",
-                                          color: textSubColor,
-                                          fontWeight: FontWeight.w500,
-                                        ),
-                                      ),
-                                      const SizedBox(
-                                        height: 10,
-                                      ),
-                                      Container(
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 20),
-                                        decoration: BoxDecoration(
-                                            border: Border.all(
-                                                width: 1, color: borderColor),
-                                            borderRadius:
-                                                BorderRadius.circular(100)),
-                                        child: Row(
-                                          children: [
-                                            Expanded(
-                                              child: TextField(
-                                                // controller: controller.yourName,
-                                                style: const TextStyle(
-                                                    fontSize: 18,
-                                                    letterSpacing: 1.6),
-                                                decoration: InputDecoration(
-                                                  hintText: "Write here...",
-                                                  hintStyle: TextStyle(
-                                                    fontSize: 14,
-                                                    fontFamily: "Poppins",
-                                                    color: textSubColor,
-                                                    fontWeight: FontWeight.w500,
+                                                const SizedBox(
+                                                    width: 10),
+                                                Text(
+                                                  "Edit",
+                                                  style: TextStyle(
+                                                    fontSize: 12,
+                                                    fontFamily:
+                                                    "Poppins",
+                                                    color:
+                                                    darkGreenColor,
+                                                    fontWeight:
+                                                    FontWeight.w400,
                                                   ),
-                                                  border: InputBorder.none,
                                                 ),
-                                              ),
+                                              ],
                                             ),
-                                          ],
+                                          ),
                                         ),
-                                      ),
-                                    ],
+                                      ],
+                                    ),
                                   ),
-                                ),
-                              ],
+                                  Padding(
+                                    padding:
+                                    const EdgeInsets.only(top: 15),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                      CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                        "${DateFormat('EEEE').format(DateTime.parse(controller.selectedDateWidget.value) )}, ${controller.selectedDateTextWidget.value}",
+                                          style: TextStyle(
+                                            fontSize: 14,
+                                            fontFamily: "Poppins",
+                                            color: darkGreenColor,
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                        ),
+                                        // Text(
+                                        //   "10 AM - 6 PM",
+                                        //   style: TextStyle(
+                                        //     fontSize: 12,
+                                        //     fontFamily: "Poppins",
+                                        //     color: textSubColor,
+                                        //     fontWeight: FontWeight.w400,
+                                        //   ),
+                                        // ),
+                                      ],
+                                    ),
+                                  ),
+                                  const SizedBox(
+                                    height: 15,
+                                  ),
+                                  Text(
+                                    "Any Instructions",
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                      fontFamily: "Poppins",
+                                      color: darkGreenColor,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                  const SizedBox(
+                                    height: 10,
+                                  ),
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 20),
+                                    decoration: BoxDecoration(
+                                        border: Border.all(
+                                            width: 1,
+                                            color: borderColor),
+                                        borderRadius:
+                                        BorderRadius.circular(100)),
+                                    child: Row(
+                                      children: [
+                                        Expanded(
+                                          child: TextField(
+                                            controller: controller.instructions,
+                                            style: const TextStyle(
+                                                fontSize: 18,
+                                                letterSpacing: 1.6),
+                                            decoration: InputDecoration(
+                                              hintText: "Write here...",
+                                              hintStyle: TextStyle(
+                                                fontSize: 14,
+                                                fontFamily: "Poppins",
+                                                color: textSubColor,
+                                                fontWeight:
+                                                FontWeight.w500,
+                                              ),
+                                              border: InputBorder.none,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
-                          ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                if (controller.isLoading.value)
+                  Container(
+                    width: Get.width,
+                    height: Get.height,
+                    color: whiteColor.withOpacity(0.4),
+                    child: Center(
+                      child: CircularProgressIndicator(
+                          color: primaryColor, backgroundColor: whiteColor),
+                    ),
+                  )
               ],
             ),
+            bottomNavigationBar: _buildContinue(context),
           ),
-          bottomNavigationBar: _buildContinue(context),
         );
       },
     );
@@ -976,14 +1048,27 @@ class SellScrapItemView extends StatelessWidget {
         Expanded(
           child: GestureDetector(
             onTap: () {
-              if (controller.currentStep.value == 0) {
-                controller.currentStep.value = 1;
-                SellScrapItemController.getDateListApi();
-              } else if (controller.currentStep.value == 1) {
+              print("isEdit : ${controller.isEdit.value}");
+
+              if(controller.isEdit.value == true || controller.isEditDate.value== true){
                 controller.currentStep.value = 2;
-              } else {
-                successfullyPopupDialog(context, controller);
+              }else {
+                if (controller.currentStep.value == 0) {
+                  controller.currentStep.value = 1;
+                  SellScrapItemController.getDateListApi();
+                } else if (controller.currentStep.value == 1) {
+                  if(controller.selectedDate== null){
+                    Fluttertoast.showToast(msg: "Please Choose Any Date");
+                  }else {
+                    controller.currentStep.value = 2;
+                  }
+                } else {
+                  controller.getCompleteAPI(context);
+                }
+
               }
+
+
               controller.update();
             },
             child: Container(
@@ -996,7 +1081,7 @@ class SellScrapItemView extends StatelessWidget {
               alignment: Alignment.center,
               height: 50,
               child: Text(
-                AppConstants.continue_text,
+                "continue_text".tr,
                 style: TextStyle(
                     fontSize: 16,
                     color: darkGreenColor,
@@ -1034,8 +1119,7 @@ class SellScrapItemView extends StatelessWidget {
                 children: dateList.data!.map((dateData) {
                   return InkWell(
                     onTap: () {
-                      Navigator.of(context)
-                          .pop(dateData); // Return selected dateData
+                      Navigator.of(context).pop(dateData); // Return selected dateData
                     },
                     child: Container(
                       padding: const EdgeInsets.symmetric(
@@ -1063,104 +1147,5 @@ class SellScrapItemView extends StatelessWidget {
     );
   }
 
-  void successfullyPopupDialog(BuildContext context, controller) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          alignment: Alignment.center,
-          backgroundColor: Colors.white,
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              SvgPicture.asset(
-                AppImages.successfully,
-                height: 180,
-              ),
-              const Text(
-                'Pickup Request Sent !',
-                style: TextStyle(
-                    color: Color(0xff003032),
-                    fontSize: 20,
-                    fontWeight: FontWeight.w500,
-                    fontFamily: "Poppins"),
-              ),
-              const SizedBox(height: 20),
-              const Text(
-                'Your Scrap Pickup partner will be coming to your doorstep soon.',
-                textAlign: TextAlign.start,
-                style: TextStyle(
-                    color: Color(0xff7B7C87),
-                    fontSize: 12,
-                    fontWeight: FontWeight.w400,
-                    fontFamily: "Poppins"),
-              ),
-              const SizedBox(height: 20),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  Expanded(
-                    flex: 1,
-                    child: GestureDetector(
-                      onTap: () {
-                        Navigator.of(context).pop();
-                      },
-                      child: Container(
-                        alignment: Alignment.center,
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 10, horizontal: 5),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(40),
-                          border: Border.all(
-                              width: 1, color: const Color(0xffE8E9E8)),
-                        ),
-                        child: const Text(
-                          'Go to home',
-                          style: TextStyle(
-                              color: Color(0xff003032),
-                              fontSize: 12,
-                              fontWeight: FontWeight.w500,
-                              fontFamily: "Poppins"),
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(
-                    width: 10,
-                  ),
-                  Expanded(
-                    flex: 1,
-                    child: GestureDetector(
-                      onTap: () {
-                        Navigator.of(context).pop();
-                      },
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 10, horizontal: 5),
-                        alignment: Alignment.center,
-                        decoration: BoxDecoration(
-                          color: primaryColor,
-                          borderRadius: BorderRadius.circular(40),
-                        ),
-                        child: const Text(
-                          'Pickup details',
-                          style: TextStyle(
-                              color: Color(0xff003032),
-                              fontSize: 12,
-                              fontWeight: FontWeight.w500,
-                              fontFamily: "Poppins"),
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
+
 }

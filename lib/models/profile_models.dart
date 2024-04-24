@@ -27,14 +27,18 @@ class ProfileData {
   String? email;
   String? mobile;
   String? location;
+  String? userId;
+  String? image;
 
-  ProfileData({this.name, this.email, this.mobile, this.location});
+  ProfileData({this.name, this.email, this.mobile, this.location, this.userId,this.image});
 
   ProfileData.fromJson(Map<String, dynamic> json) {
     name = json['name'];
     email = json['email'];
     mobile = json['mobile'];
     location = json['location'];
+    userId = json['user_id'];
+    image = json['image'];
   }
 
   Map<String, dynamic> toJson() {
@@ -43,6 +47,8 @@ class ProfileData {
     data['email'] = this.email;
     data['mobile'] = this.mobile;
     data['location'] = this.location;
+    data['user_id'] = this.userId;
+    data['image'] = this.image;
     return data;
   }
 }

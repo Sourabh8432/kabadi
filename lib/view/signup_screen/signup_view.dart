@@ -39,7 +39,7 @@ class SignupView extends StatelessWidget {
                                     Container(
                                         margin: const EdgeInsets.only(right: 30),
                                         child: Text(
-                                            AppConstants.signUpTitle,
+                                            "signUpTitle".tr,
                                           style: TextStyle(
                                               color: darkGreenColor,
                                               fontSize: 24,
@@ -50,7 +50,7 @@ class SignupView extends StatelessWidget {
                                       padding: const EdgeInsets.symmetric(
                                           horizontal: 10),
                                       child: Text(
-                                        AppConstants.phone,
+                                        "phone".tr,
                                         style: TextStyle(
                                           fontFamily: "Poppins",
                                             color: primaryColor,
@@ -129,7 +129,7 @@ class SignupView extends StatelessWidget {
             ),
           ),
         ),
-        title: Text(AppConstants.signUp, style: TextStyle(
+        title: Text("signUp".tr, style: TextStyle(
     fontSize: 16,
     fontFamily: "Poppins",
     color: darkGreenColor,
@@ -161,7 +161,7 @@ class SignupView extends StatelessWidget {
               alignment: Alignment.center,
               height: 50,
               child: Text(
-                AppConstants.continue_text,
+                "continue_text".tr,
                 style: TextStyle(
                     fontSize: 16,
                     color: darkGreenColor,

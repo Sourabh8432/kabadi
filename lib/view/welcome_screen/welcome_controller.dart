@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:ui';
 
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -13,6 +14,7 @@ class WelcomeController extends GetxController {
     // TODO: implement onInit
     super.onInit();
   }
+
 
 
 }
