@@ -57,7 +57,10 @@ class LocaleString extends Translations {
       "addAddressSubTitle": "Add the Complete Address in Detail.",
       "yourLocation": "Your Location",
       "continue_text": "Continue",
-      "submit": "Submit"
+      "submit": "Submit",
+      "camera": "Take Photo",
+      "gallery": "Choose From Gallery",
+      "selectImage": "Select Image",
     },
     'hi_IN': {
       "welcome_text": "स्वागत है",
@@ -113,8 +116,12 @@ class LocaleString extends Translations {
       "addAddressSubTitle": "विस्तार से पूरा पता जोड़ें।",
       "yourLocation": "आपका स्थान",
       "continue_text": "जारी रखें",
-      "submit": "प्रस्तुत करें"
+      "submit": "प्रस्तुत करें",
+      "camera": "फोटो खींचें",
+       "gallery": "गैलरी से चयन करें",
+      "selectImage": "छवि का चयन करें"
     }
+
     ,
   };
 }

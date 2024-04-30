@@ -11,6 +11,8 @@ import 'package:get/get.dart';
 import 'package:kabadi_app/utils/app_colors.dart';
 import 'package:kabadi_app/view/choose_language/choose_language_view.dart';
 import 'package:kabadi_app/view/sell_scrap/sellscrap_controller.dart';
+import 'package:kabadi_app/view/sell_scrap_item/sell_scrap_item_view.dart';
+import 'package:kabadi_app/view/welcome_screen/welcome_view.dart';
 import 'package:pinput/pinput.dart';
 import '../../models/get_category_models.dart';
 import '../../models/get_price_list.dart';
@@ -60,15 +62,17 @@ class SellScrapView extends StatelessWidget {
                                     children: [
                                       GestureDetector(
                                         onTap: () {
-                                          controller.scaffoldKey.currentState
-                                              ?.openDrawer();
+                                          // controller.profileApi().then((value) {
+                                          //   controller.scaffoldKey.currentState?.openDrawer();
+                                          // });
+                                          controller.scaffoldKey.currentState?.openDrawer();
                                           controller.update();
                                         },
                                         child: Container(
                                           height: 60,
                                           width: 60,
                                           margin:
-                                              const EdgeInsets.only(top: 10),
+                                          const EdgeInsets.only(top: 10),
                                           padding: const EdgeInsets.all(20),
                                           decoration: BoxDecoration(
                                               shape: BoxShape.circle,
@@ -90,19 +94,24 @@ class SellScrapView extends StatelessWidget {
                                                   top: 10),
                                               alignment: Alignment.centerLeft,
                                               padding:
-                                                  const EdgeInsets.symmetric(
-                                                      horizontal: 15),
+                                              const EdgeInsets.symmetric(
+                                                  horizontal: 15),
                                               decoration: BoxDecoration(
                                                   borderRadius:
-                                                      BorderRadius.circular(40),
+                                                  BorderRadius.circular(40),
                                                   border: Border.all(
                                                       color: lightGreenColor)),
                                               child: SingleChildScrollView(
                                                 scrollDirection:
-                                                    Axis.horizontal,
+                                                Axis.horizontal,
                                                 child: InkWell(
-                                                  onTap: () =>
-                                                      _showBottomSheet(context),
+                                                  onTap: () {
+                                                    controller.myAddressApi().then((value) {
+                                                      _showBottomSheet(context);
+                                                      controller.update();
+                                                    });
+                                                  },
+
                                                   child: Obx(() {
                                                     return Text(
                                                         controller
@@ -110,11 +119,11 @@ class SellScrapView extends StatelessWidget {
                                                         style: TextStyle(
                                                             fontSize: 12,
                                                             fontFamily:
-                                                                "Poppins",
+                                                            "Poppins",
                                                             color: whiteColor,
                                                             fontWeight:
-                                                                FontWeight
-                                                                    .w400));
+                                                            FontWeight
+                                                                .w400));
                                                   }),
                                                 ),
                                               ),
@@ -125,8 +134,8 @@ class SellScrapView extends StatelessWidget {
                                               margin: const EdgeInsets.only(
                                                   left: 30, top: 1),
                                               padding:
-                                                  const EdgeInsets.symmetric(
-                                                      horizontal: 3),
+                                              const EdgeInsets.symmetric(
+                                                  horizontal: 3),
                                               child: Row(
                                                 children: [
                                                   Text("pickupLocation".tr,
@@ -135,7 +144,7 @@ class SellScrapView extends StatelessWidget {
                                                           fontFamily: "Poppins",
                                                           color: whiteColor,
                                                           fontWeight:
-                                                              FontWeight.w400)),
+                                                          FontWeight.w400)),
                                                   const SizedBox(
                                                     width: 10,
                                                   ),
@@ -158,217 +167,217 @@ class SellScrapView extends StatelessWidget {
                             ),
                             controller.isAddressChecker.value == false
                                 ? Container(
-                                    margin: const EdgeInsets.symmetric(
-                                        horizontal: 30, vertical: 10),
-                                    child: DefaultTabController(
-                                        length: 2,
-                                        child: Card(
-                                          shape: RoundedRectangleBorder(
+                              margin: const EdgeInsets.symmetric(
+                                  horizontal: 30, vertical: 10),
+                              child: DefaultTabController(
+                                  length: 2,
+                                  child: Card(
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                        BorderRadius.circular(40)),
+                                    child: Container(
+                                      height: 60,
+                                      decoration: BoxDecoration(
+                                          color: whiteColor,
+                                          borderRadius:
+                                          const BorderRadius.all(
+                                              Radius.circular(40))),
+                                      padding: const EdgeInsets.all(5),
+                                      child: TabBar(
+                                          padding: EdgeInsets.zero,
+                                          indicatorSize:
+                                          TabBarIndicatorSize.tab,
+                                          labelPadding: EdgeInsets.zero,
+                                          onTap: (value) {
+                                            controller.tabController
+                                                .value = value;
+                                            controller.update();
+                                          },
+                                          indicator: BoxDecoration(
+                                              color: primaryColor,
                                               borderRadius:
-                                                  BorderRadius.circular(40)),
-                                          child: Container(
-                                            height: 60,
-                                            decoration: BoxDecoration(
-                                                color: whiteColor,
-                                                borderRadius:
-                                                    const BorderRadius.all(
-                                                        Radius.circular(40))),
-                                            padding: const EdgeInsets.all(5),
-                                            child: TabBar(
-                                                padding: EdgeInsets.zero,
-                                                indicatorSize:
-                                                    TabBarIndicatorSize.tab,
-                                                labelPadding: EdgeInsets.zero,
-                                                onTap: (value) {
-                                                  controller.tabController
-                                                      .value = value;
-                                                  controller.update();
-                                                },
-                                                indicator: BoxDecoration(
-                                                    color: primaryColor,
-                                                    borderRadius:
-                                                        const BorderRadius.all(
-                                                            Radius.circular(
-                                                                40))),
-                                                indicatorColor: primaryColor,
-                                                dividerHeight: 0,
-                                                tabs: [
-                                                  Container(
-                                                    padding: const EdgeInsets
-                                                        .symmetric(
-                                                        horizontal: 10),
-                                                    height: 40,
-                                                    child: Tab(
-                                                      child: Row(
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .center,
-                                                        children: [
-                                                          SvgPicture.asset(
-                                                            AppImages.sellScrap,
-                                                            width: 20,
-                                                            height: 20,
-                                                            color:
-                                                                darkGreenColor,
-                                                          ),
-                                                          const SizedBox(
-                                                              width: 10),
-                                                          Text(
-                                                            "sellScrap".tr,
-                                                            style: TextStyle(
-                                                                fontSize: 14,
-                                                                fontFamily:
-                                                                    "Poppins",
-                                                                color:
-                                                                    darkGreenColor,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w500),
-                                                          ),
-                                                        ],
-                                                      ),
+                                              const BorderRadius.all(
+                                                  Radius.circular(
+                                                      40))),
+                                          indicatorColor: primaryColor,
+                                          dividerHeight: 0,
+                                          tabs: [
+                                            Container(
+                                              padding: const EdgeInsets
+                                                  .symmetric(
+                                                  horizontal: 10),
+                                              height: 40,
+                                              child: Tab(
+                                                child: Row(
+                                                  mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .center,
+                                                  children: [
+                                                    SvgPicture.asset(
+                                                      AppImages.sellScrap,
+                                                      width: 20,
+                                                      height: 20,
+                                                      color:
+                                                      darkGreenColor,
                                                     ),
-                                                  ),
-                                                  Container(
-                                                    padding: const EdgeInsets
-                                                        .symmetric(
-                                                        horizontal: 10),
-                                                    height: 40,
-                                                    child: Tab(
-                                                      child: Row(
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .center,
-                                                        children: [
-                                                          SvgPicture.asset(
-                                                            AppImages.priceList,
-                                                            width: 20,
-                                                            height: 20,
-                                                            color:
-                                                                darkGreenColor,
-                                                          ),
-                                                          const SizedBox(
-                                                              width: 10),
-                                                          Text(
-                                                            "priceList".tr,
-                                                            style: TextStyle(
-                                                                fontSize: 14,
-                                                                fontFamily:
-                                                                    "Poppins",
-                                                                color:
-                                                                    darkGreenColor,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w500),
-                                                          ),
-                                                        ],
-                                                      ),
+                                                    const SizedBox(
+                                                        width: 10),
+                                                    Text(
+                                                      "sellScrap".tr,
+                                                      style: TextStyle(
+                                                          fontSize: 14,
+                                                          fontFamily:
+                                                          "Poppins",
+                                                          color:
+                                                          darkGreenColor,
+                                                          fontWeight:
+                                                          FontWeight
+                                                              .w500),
                                                     ),
-                                                  )
-                                                ]),
-                                          ),
-                                        )),
-                                  )
+                                                  ],
+                                                ),
+                                              ),
+                                            ),
+                                            Container(
+                                              padding: const EdgeInsets
+                                                  .symmetric(
+                                                  horizontal: 10),
+                                              height: 40,
+                                              child: Tab(
+                                                child: Row(
+                                                  mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .center,
+                                                  children: [
+                                                    SvgPicture.asset(
+                                                      AppImages.priceList,
+                                                      width: 20,
+                                                      height: 20,
+                                                      color:
+                                                      darkGreenColor,
+                                                    ),
+                                                    const SizedBox(
+                                                        width: 10),
+                                                    Text(
+                                                      "priceList".tr,
+                                                      style: TextStyle(
+                                                          fontSize: 14,
+                                                          fontFamily:
+                                                          "Poppins",
+                                                          color:
+                                                          darkGreenColor,
+                                                          fontWeight:
+                                                          FontWeight
+                                                              .w500),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            )
+                                          ]),
+                                    ),
+                                  )),
+                            )
                                 : SizedBox(),
                           ],
                         ),
                         controller.tabController.value == 0
                             ? Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 16),
-                                child: controller.isAddressChecker.value ==
-                                        false
-                                    ? Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                            RichText(
-                                                text: TextSpan(children: [
-                                                  TextSpan(
-                                                      text: "Welcome Back,",
-                                                      style: TextStyle(
-                                                          fontSize: 20,
-                                                          fontFamily: "Poppins",
-                                                          color: darkGreenColor,
-                                                          fontWeight:
-                                                              FontWeight.w400)),
-                                                  const TextSpan(text: " "),
-                                                  TextSpan(
-                                                    text: (controller.getName == "" || controller.getName == null)
-                                                        ?  controller.saveName.value
-                                                        : controller.getName,
-                                                    style: TextStyle(
-                                                        fontSize: 20,
-                                                        fontFamily: "Poppins",
-                                                        color: darkGreenColor,
-                                                        fontWeight:
-                                                            FontWeight.w700),
-                                                  ),
-                                                ]),
-                                                textAlign: TextAlign.left),
-                                            const SizedBox(height: 5),
-                                            Text(
-                                                "Select the items you would like to sell ?",
-                                                style: TextStyle(
-                                                    fontSize: 16,
-                                                    fontFamily: "Poppins",
-                                                    color: textSubColor,
-                                                    fontWeight:
-                                                        FontWeight.w400)),
-                                            const SizedBox(height: 10),
-                                          ])
-                                    : const SizedBox())
+                            padding:
+                            const EdgeInsets.symmetric(horizontal: 16),
+                            child: controller.isAddressChecker.value ==
+                                false
+                                ? Column(
+                                crossAxisAlignment:
+                                CrossAxisAlignment.start,
+                                children: [
+                                  RichText(
+                                      text: TextSpan(children: [
+                                        TextSpan(
+                                            text: "Welcome Back,",
+                                            style: TextStyle(
+                                                fontSize: 20,
+                                                fontFamily: "Poppins",
+                                                color: darkGreenColor,
+                                                fontWeight:
+                                                FontWeight.w400)),
+                                        const TextSpan(text: " "),
+                                        TextSpan(
+                                          text: (controller.getName == "" || controller.getName == null)
+                                              ?  controller.saveName.value
+                                              : controller.getName,
+                                          style: TextStyle(
+                                              fontSize: 20,
+                                              fontFamily: "Poppins",
+                                              color: darkGreenColor,
+                                              fontWeight:
+                                              FontWeight.w700),
+                                        ),
+                                      ]),
+                                      textAlign: TextAlign.left),
+                                  const SizedBox(height: 5),
+                                  Text(
+                                      "Select the items you would like to sell ?",
+                                      style: TextStyle(
+                                          fontSize: 16,
+                                          fontFamily: "Poppins",
+                                          color: textSubColor,
+                                          fontWeight:
+                                          FontWeight.w400)),
+                                  const SizedBox(height: 10),
+                                ])
+                                : const SizedBox())
                             : Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 16),
-                                child: controller.isAddressChecker.value ==
-                                        false
-                                    ? Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                            RichText(
-                                                text: TextSpan(
-                                                    text: "Scrap Price List",
-                                                    style: TextStyle(
-                                                        fontSize: 20,
-                                                        fontFamily: "Poppins",
-                                                        color: darkGreenColor,
-                                                        fontWeight:
-                                                            FontWeight.w400)),
-                                                textAlign: TextAlign.left),
-                                            const SizedBox(height: 5),
-                                            Text(
-                                                "Prices may fluctuate based on Industry rates.",
-                                                style: TextStyle(
-                                                    fontSize: 16,
-                                                    fontFamily: "Poppins",
-                                                    color: textSubColor,
-                                                    fontWeight:
-                                                        FontWeight.w400)),
-                                            const SizedBox(height: 10),
-                                          ])
-                                    : const SizedBox()),
+                            padding:
+                            const EdgeInsets.symmetric(horizontal: 16),
+                            child: controller.isAddressChecker.value ==
+                                false
+                                ? Column(
+                                crossAxisAlignment:
+                                CrossAxisAlignment.start,
+                                children: [
+                                  RichText(
+                                      text: TextSpan(
+                                          text: "Scrap Price List",
+                                          style: TextStyle(
+                                              fontSize: 20,
+                                              fontFamily: "Poppins",
+                                              color: darkGreenColor,
+                                              fontWeight:
+                                              FontWeight.w400)),
+                                      textAlign: TextAlign.left),
+                                  const SizedBox(height: 5),
+                                  Text(
+                                      "Prices may fluctuate based on Industry rates.",
+                                      style: TextStyle(
+                                          fontSize: 16,
+                                          fontFamily: "Poppins",
+                                          color: textSubColor,
+                                          fontWeight:
+                                          FontWeight.w400)),
+                                  const SizedBox(height: 10),
+                                ])
+                                : const SizedBox()),
                         controller.isAddressChecker.value == false
                             ? Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 16, vertical: 10),
-                                child: controller.tabController.value == 0
-                                    ? _buildSellScrap()
-                                    : _buildPriceList(),
-                              )
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 16, vertical: 10),
+                          child: controller.tabController.value == 0
+                              ? _buildSellScrap()
+                              : _buildPriceList(),
+                        )
                             : Container(
-                                height: 400,
-                                padding: EdgeInsets.symmetric(horizontal: 20),
-                                alignment: Alignment.center,
-                                child: Text(controller.showMessage.toString(),
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                        fontSize: 20,
-                                        fontFamily: "Poppins",
-                                        color: darkGreenColor,
-                                        fontWeight: FontWeight.w400)),
-                              ),
+                          height: 400,
+                          padding: EdgeInsets.symmetric(horizontal: 20),
+                          alignment: Alignment.center,
+                          child: Text(controller.showMessage.toString(),
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                  fontSize: 20,
+                                  fontFamily: "Poppins",
+                                  color: darkGreenColor,
+                                  fontWeight: FontWeight.w400)),
+                        ),
                       ],
                     ),
                   ),
@@ -392,7 +401,7 @@ class SellScrapView extends StatelessWidget {
                     Container(
                       height: 180,
                       padding:
-                          const EdgeInsets.only(right: 20, left: 20, top: 40),
+                      const EdgeInsets.only(right: 20, left: 20, top: 40),
                       alignment: Alignment.center,
                       child: Row(
                         children: [
@@ -426,7 +435,7 @@ class SellScrapView extends StatelessWidget {
                               children: [
                                 Text(
                                   (controller.profileList?.name == null ||
-                                          controller.profileList?.name == "")
+                                      controller.profileList?.name == "")
                                       ? controller.saveName.value
                                       : controller.getName ?? "",
                                   style: const TextStyle(
@@ -686,7 +695,7 @@ class SellScrapView extends StatelessWidget {
                             decoration: BoxDecoration(
                                 shape: BoxShape.circle,
                                 border:
-                                    Border.all(color: primaryColor, width: 1)),
+                                Border.all(color: primaryColor, width: 1)),
                             margin: const EdgeInsets.only(right: 15),
                             alignment: Alignment.center,
                             height: 50,
@@ -733,11 +742,11 @@ class SellScrapView extends StatelessWidget {
                 ),
               ),
               bottomNavigationBar: (controller.tabController.value == 0 &&
-                      controller.isAddressChecker.value == false)
+                  controller.isAddressChecker.value == false)
                   ? (controller.address.value == null ||
-                          controller.address.isEmpty)
-                      ? const SizedBox()
-                      : _buildContinue(context, controller)
+                  controller.address.isEmpty)
+                  ? const SizedBox()
+                  : _buildContinue(context, controller)
                   : null,
             ),
           );
@@ -805,7 +814,7 @@ class SellScrapView extends StatelessWidget {
                     shape: BoxShape.circle,
                     border: Border.all(
                       color: sellController.isSelected(
-                              sellController.getCategoryList[index].categoryId!)
+                          sellController.getCategoryList[index].categoryId!)
                           ? primaryColor
                           : lightGreenColor,
                       width: 2,
@@ -864,7 +873,7 @@ class SellScrapView extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const SizedBox(height: 10),
+        SizedBox(height: 10),
         Container(
           decoration: BoxDecoration(
             border: Border.all(width: 1, color: borderColor),
@@ -875,10 +884,11 @@ class SellScrapView extends StatelessWidget {
               Expanded(
                 child: TextField(
                   controller: sellController.priceList,
-                  style: const TextStyle(fontSize: 18, letterSpacing: 1.6),
+                  style: TextStyle(fontSize: 18, letterSpacing: 1.6),
                   onChanged: (value) {
-                    // Filter the list based on user input
-                    sellController.filterPriceList(value);
+                    // Filter the categories based on user input
+                    sellController.filterCategories(value);
+                    sellController.update();
                   },
                   decoration: InputDecoration(
                     prefixIcon: Icon(
@@ -898,21 +908,21 @@ class SellScrapView extends StatelessWidget {
             ],
           ),
         ),
-        const SizedBox(height: 10),
+        SizedBox(height: 10),
         ListView.builder(
-          shrinkWrap: true,
-          physics: NeverScrollableScrollPhysics(),
           padding: EdgeInsets.zero,
-          itemCount: sellController.getAllPriceList.length,
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          itemCount: sellController.filterCategories(sellController.priceList.text.toString()).length,
           itemBuilder: (context, index) {
-            final scrapItem = sellController.getAllPriceList[index];
+            final category = sellController.filterCategories(sellController.priceList.text.toString())[index];
 
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const SizedBox(height: 10),
+                SizedBox(height: 10),
                 Text(
-                  scrapItem.name ?? "null",
+                  category.name ?? "",
                   style: TextStyle(
                     fontSize: 16,
                     fontFamily: "Poppins",
@@ -920,18 +930,17 @@ class SellScrapView extends StatelessWidget {
                     fontWeight: FontWeight.w400,
                   ),
                 ),
-                const SizedBox(height: 10),
                 SizedBox(
                   height: 75,
                   child: ListView.builder(
                     scrollDirection: Axis.horizontal,
-                    itemCount: scrapItem.subCategories?.length ?? 0,
+                    itemCount: category.subCategories?.length ?? 0,
                     itemBuilder: (context, subIndex) {
-                      final subList = scrapItem.subCategories![subIndex];
+                      final subCategory = category.subCategories?[subIndex];
 
                       return Container(
-                        margin: const EdgeInsets.only(right: 10),
-                        padding: const EdgeInsets.all(10),
+                        margin: EdgeInsets.only(right: 10),
+                        padding: EdgeInsets.all(10),
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(10),
                           border: Border.all(color: borderColor, width: 1),
@@ -940,7 +949,7 @@ class SellScrapView extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              subList.name ?? "null",
+                              subCategory?.name ?? "Unknown Sub-Category",
                               style: TextStyle(
                                 fontSize: 14,
                                 fontFamily: "Poppins",
@@ -948,9 +957,9 @@ class SellScrapView extends StatelessWidget {
                                 fontWeight: FontWeight.w500,
                               ),
                             ),
-                            const SizedBox(height: 10),
+                            SizedBox(height: 10),
                             Text(
-                              "${subList.priceUnit}/-${subList.weightUnit}",
+                              "${subCategory?.priceUnit ?? 'N/A'}/-${subCategory?.weightUnit ?? 'N/A'}",
                               style: TextStyle(
                                 fontSize: 14,
                                 fontFamily: "Poppins",
@@ -971,6 +980,120 @@ class SellScrapView extends StatelessWidget {
       ],
     );
   }
+
+  // Widget _buildPriceList() {
+  //   SellScrapController sellController = Get.find();
+  //
+  //   return Column(
+  //     crossAxisAlignment: CrossAxisAlignment.start,
+  //     children: [
+  //       const SizedBox(height: 10),
+  //       Container(
+  //         decoration: BoxDecoration(
+  //           border: Border.all(width: 1, color: borderColor),
+  //           borderRadius: BorderRadius.circular(100),
+  //         ),
+  //         child: Row(
+  //           children: [
+  //             Expanded(
+  //               child: TextField(
+  //                 controller: sellController.priceList,
+  //                 style: const TextStyle(fontSize: 18, letterSpacing: 1.6),
+  //                 onChanged: (value) {
+  //                   // Filter the list based on user input
+  //                   sellController.filterCategories(value);
+  //                 },
+  //                 decoration: InputDecoration(
+  //                   prefixIcon: Icon(
+  //                     Icons.search,
+  //                     color: darkGreenColor,
+  //                   ),
+  //                   border: InputBorder.none,
+  //                   hintText: "Search scrap item..",
+  //                   hintStyle: TextStyle(
+  //                     fontSize: 14,
+  //                     fontWeight: FontWeight.w400,
+  //                     color: textSubColor,
+  //                   ),
+  //                 ),
+  //               ),
+  //             ),
+  //           ],
+  //         ),
+  //       ),
+  //       const SizedBox(height: 10),
+  //       ListView.builder(
+  //         shrinkWrap: true,
+  //         physics: NeverScrollableScrollPhysics(),
+  //         padding: EdgeInsets.zero,
+  //         itemCount: sellController.getAllPriceList.length,
+  //         itemBuilder: (context, index) {
+  //           final scrapItem = sellController.getAllPriceList[index];
+  //
+  //           return Column(
+  //             crossAxisAlignment: CrossAxisAlignment.start,
+  //             children: [
+  //               const SizedBox(height: 10),
+  //               Text(
+  //                 scrapItem.name ?? "null",
+  //                 style: TextStyle(
+  //                   fontSize: 16,
+  //                   fontFamily: "Poppins",
+  //                   color: textSubColor,
+  //                   fontWeight: FontWeight.w400,
+  //                 ),
+  //               ),
+  //               const SizedBox(height: 10),
+  //               SizedBox(
+  //                 height: 75,
+  //                 child: ListView.builder(
+  //                   scrollDirection: Axis.horizontal,
+  //                   itemCount: scrapItem.subCategories?.length ?? 0,
+  //                   itemBuilder: (context, subIndex) {
+  //                     final subList = scrapItem.subCategories![subIndex];
+  //
+  //                     return Container(
+  //                       margin: const EdgeInsets.only(right: 10),
+  //                       padding: const EdgeInsets.all(10),
+  //                       decoration: BoxDecoration(
+  //                         borderRadius: BorderRadius.circular(10),
+  //                         border: Border.all(color: borderColor, width: 1),
+  //                       ),
+  //                       child: Column(
+  //                         crossAxisAlignment: CrossAxisAlignment.start,
+  //                         children: [
+  //                           Text(
+  //                             subList.name ?? "null",
+  //                             style: TextStyle(
+  //                               fontSize: 14,
+  //                               fontFamily: "Poppins",
+  //                               color: darkGreenColor,
+  //                               fontWeight: FontWeight.w500,
+  //                             ),
+  //                           ),
+  //                           const SizedBox(height: 10),
+  //                           Text(
+  //                             "${subList.priceUnit}/-${subList.weightUnit}",
+  //                             style: TextStyle(
+  //                               fontSize: 14,
+  //                               fontFamily: "Poppins",
+  //                               color: textSubColor,
+  //                               fontWeight: FontWeight.w400,
+  //                             ),
+  //                           ),
+  //                         ],
+  //                       ),
+  //                     );
+  //                   },
+  //                 ),
+  //               ),
+  //             ],
+  //           );
+  //         },
+  //       ),
+  //     ],
+  //   );
+  // }
 
 
   void showLogoutDialog(BuildContext context) {
@@ -1037,7 +1160,7 @@ class SellScrapView extends StatelessWidget {
                     child: GestureDetector(
                       onTap: () {
                         AppPrefrence.clearPrefrence();
-                        Get.offAll(const ChooseLanguageView());
+                        Get.offAll(const WelcomeView());
                       },
                       child: Container(
                         padding: const EdgeInsets.all(10),
@@ -1066,51 +1189,48 @@ class SellScrapView extends StatelessWidget {
     );
   }
 
-  void chooseLangDialog(BuildContext context, controller) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          alignment: Alignment.center,
-          backgroundColor: Colors.white,
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              const Text(
-                'Change Language',
-                style: TextStyle(
-                    color: Color(0xff003032),
-                    fontSize: 20,
-                    fontWeight: FontWeight.w500,
-                    fontFamily: "Poppins"),
-              ),
-              const SizedBox(height: 20),
-              const Text(
-                'Pick your Preferred App Language',
-                textAlign: TextAlign.start,
-                style: TextStyle(
-                    color: Color(0xff7B7C87),
-                    fontSize: 12,
-                    fontWeight: FontWeight.w400,
-                    fontFamily: "Poppins"),
-              ),
-              const SizedBox(height: 20),
-              Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 16, vertical: 15),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Expanded(
-                        child: Column(
+  void chooseLangDialog(BuildContext context, SellScrapController controller) {
+    Get.dialog(AlertDialog(
+      alignment: Alignment.center,
+      backgroundColor: Colors.white,
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          const Text(
+            'Change Language',
+            style: TextStyle(
+                color: Color(0xff003032),
+                fontSize: 20,
+                fontWeight: FontWeight.w500,
+                fontFamily: "Poppins"),
+          ),
+          const SizedBox(height: 20),
+          const Text(
+            'Pick your Preferred App Language',
+            textAlign: TextAlign.start,
+            style: TextStyle(
+                color: Color(0xff7B7C87),
+                fontSize: 12,
+                fontWeight: FontWeight.w400,
+                fontFamily: "Poppins"),
+          ),
+          const SizedBox(height: 20),
+          Padding(
+            padding:
+            const EdgeInsets.symmetric(horizontal: 16, vertical: 15),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Expanded(
+                    child: Column(
                       children: [
                         Obx(() {
-                          return InkWell(
+                          return GestureDetector(
                             onTap: () {
                               controller.isCheck.value = 0;
-                              controller
-                                  .updateLanguage(const Locale('en', 'US'));
+                              // controller
+                              //     .updateLanguage(const Locale('en', 'US'));
                             },
                             child: Container(
                               height: 120,
@@ -1122,7 +1242,7 @@ class SellScrapView extends StatelessWidget {
                                       : whiteColor,
                                   shape: BoxShape.circle,
                                   border:
-                                      Border.all(width: 1, color: borderColor)),
+                                  Border.all(width: 1, color: borderColor)),
                               child: SvgPicture.asset(
                                 AppImages.englishEn,
                                 height: 33,
@@ -1146,16 +1266,16 @@ class SellScrapView extends StatelessWidget {
                         ),
                       ],
                     )),
-                    const SizedBox(width: 10),
-                    Expanded(
-                        child: Column(
+                const SizedBox(width: 10),
+                Expanded(
+                    child: Column(
                       children: [
                         Obx(() {
-                          return InkWell(
+                          return GestureDetector(
                             onTap: () {
                               controller.isCheck.value = 1;
-                              controller
-                                  .updateLanguage(const Locale('hi', 'IN'));
+                              // controller
+                              //     .updateLanguage(const Locale('hi', 'IN'));
                             },
                             child: Container(
                               height: 120,
@@ -1167,7 +1287,7 @@ class SellScrapView extends StatelessWidget {
                                       : whiteColor,
                                   shape: BoxShape.circle,
                                   border:
-                                      Border.all(width: 1, color: borderColor)),
+                                  Border.all(width: 1, color: borderColor)),
                               child: SvgPicture.asset(
                                 AppImages.hindiHi,
                                 height: 33,
@@ -1191,75 +1311,78 @@ class SellScrapView extends StatelessWidget {
                         ),
                       ],
                     )),
-                  ],
+              ],
+            ),
+          ),
+          const SizedBox(height: 20),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              Expanded(
+                flex: 1,
+                child: GestureDetector(
+                  onTap: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: Container(
+                    alignment: Alignment.center,
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 10, horizontal: 5),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(40),
+                      border: Border.all(
+                          width: 1, color: const Color(0xffE8E9E8)),
+                    ),
+                    child: const Text(
+                      'Cancel',
+                      style: TextStyle(
+                          color: Color(0xff003032),
+                          fontSize: 12,
+                          fontWeight: FontWeight.w500,
+                          fontFamily: "Poppins"),
+                    ),
+                  ),
                 ),
               ),
-              const SizedBox(height: 20),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  Expanded(
-                    flex: 1,
-                    child: GestureDetector(
-                      onTap: () {
-                        Navigator.of(context).pop();
-                      },
-                      child: Container(
-                        alignment: Alignment.center,
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 10, horizontal: 5),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(40),
-                          border: Border.all(
-                              width: 1, color: const Color(0xffE8E9E8)),
-                        ),
-                        child: const Text(
-                          'Cancel',
-                          style: TextStyle(
-                              color: Color(0xff003032),
-                              fontSize: 12,
-                              fontWeight: FontWeight.w500,
-                              fontFamily: "Poppins"),
-                        ),
-                      ),
+              const SizedBox(
+                width: 10,
+              ),
+              Expanded(
+                flex: 2,
+                child: GestureDetector(
+                  onTap: () {
+                    if( controller.isCheck.value == 0){
+                      controller.updateLanguage(const Locale('en', 'US'));
+                    }else {
+                      controller
+                          .updateLanguage(const Locale('hi', 'IN'));
+                    }
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 10, horizontal: 5),
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      color: primaryColor,
+                      borderRadius: BorderRadius.circular(40),
+                    ),
+                    child: const Text(
+                      'Change Language',
+                      style: TextStyle(
+                          color: Color(0xff003032),
+                          fontSize: 12,
+                          fontWeight: FontWeight.w500,
+                          fontFamily: "Poppins"),
                     ),
                   ),
-                  const SizedBox(
-                    width: 10,
-                  ),
-                  Expanded(
-                    flex: 2,
-                    child: GestureDetector(
-                      onTap: () {
-                        Navigator.of(context).pop();
-                      },
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 10, horizontal: 5),
-                        alignment: Alignment.center,
-                        decoration: BoxDecoration(
-                          color: primaryColor,
-                          borderRadius: BorderRadius.circular(40),
-                        ),
-                        child: const Text(
-                          'Change Language',
-                          style: TextStyle(
-                              color: Color(0xff003032),
-                              fontSize: 12,
-                              fontWeight: FontWeight.w500,
-                              fontFamily: "Poppins"),
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
+                ),
               ),
             ],
           ),
-        );
-      },
-    );
+        ],
+      ),
+    ));
   }
 
   void _showBottomSheet(BuildContext context) {
@@ -1328,70 +1451,76 @@ class SellScrapView extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 20),
-                  ListView.builder(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemCount: sellController.myAddressData.length,
-                    itemBuilder: (context, index) {
-                      return Obx(() => GestureDetector(
-                            onTap: () {
-                              sellController.myIndex.value = index;
-                              print(
-                                  "index : $index : ${sellController.myIndex}");
-                              sellController.update();
-                            },
-                            child: Container(
-                              padding: const EdgeInsets.all(10),
-                              margin: const EdgeInsets.only(bottom: 10),
-                              decoration: BoxDecoration(
-                                  border: sellController.myIndex.value == index
-                                      ? Border.all(
-                                          width: 2, color: primaryColor)
-                                      : null,
-                                  color: sellController.myIndex.value != index
-                                      ? lightBg
-                                      : whiteColor,
-                                  borderRadius: BorderRadius.circular(15)),
-                              child: Row(
-                                children: [
-                                  SvgPicture.asset(
-                                    height: 40,
-                                    width: 40,
-                                    AppImages.officeSvg,
-                                  ),
-                                  const SizedBox(width: 10),
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        sellController.myAddressData[index]
-                                                .locationType ??
-                                            "null",
-                                        style: TextStyle(
-                                            fontSize: 14,
-                                            fontFamily: "Poppins",
-                                            color: darkGreenColor,
-                                            fontWeight: FontWeight.w600),
-                                      ),
-                                      const SizedBox(height: 10),
-                                      Text(
-                                        sellController.myAddressData[index]
-                                                .addressLine ??
-                                            "null",
-                                        style: TextStyle(
-                                            fontSize: 10,
-                                            fontFamily: "Poppins",
-                                            color: darkGreenColor,
-                                            fontWeight: FontWeight.w400),
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
+                  SizedBox(
+                    height: 300,
+                    child: ListView.builder(
+                      // shrinkWrap: true,
+                      // physics: const NeverScrollableScrollPhysics(),
+                      itemCount: sellController.myAddressData.length,
+                      itemBuilder: (context, index) {
+                        return Obx(() => GestureDetector(
+                          onTap: () {
+                            sellController.myIndex.value = index;
+                            Get.back();
+                            sellController.location.value = sellController.myAddressData[index].addressLine.toString();
+                            AppPrefrence.putString("location", sellController.location.value);
+                            AppPrefrence.putString("address_id", sellController.myAddressData[index].addressId.toString());
+                            AppPrefrence.putString("location_type", sellController.myAddressData[index].locationType.toString());
+                            sellController.update();
+                          },
+                          child: Container(
+                            padding: const EdgeInsets.all(10),
+                            margin: const EdgeInsets.only(bottom: 10),
+                            decoration: BoxDecoration(
+                                border: sellController.myIndex.value == index
+                                    ? Border.all(
+                                    width: 2, color: primaryColor)
+                                    : null,
+                                color: sellController.myIndex.value != index
+                                    ? lightBg
+                                    : whiteColor,
+                                borderRadius: BorderRadius.circular(15)),
+                            child: Row(
+                              children: [
+                                SvgPicture.asset(
+                                  height: 40,
+                                  width: 40,
+                                  AppImages.officeSvg,
+                                ),
+                                const SizedBox(width: 10),
+                                Column(
+                                  crossAxisAlignment:
+                                  CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      sellController.myAddressData[index]
+                                          .locationType ??
+                                          "null",
+                                      style: TextStyle(
+                                          fontSize: 14,
+                                          fontFamily: "Poppins",
+                                          color: darkGreenColor,
+                                          fontWeight: FontWeight.w600),
+                                    ),
+                                    const SizedBox(height: 10),
+                                    Text(
+                                      sellController.myAddressData[index]
+                                          .addressLine ??
+                                          "null",
+                                      style: TextStyle(
+                                          fontSize: 10,
+                                          fontFamily: "Poppins",
+                                          color: darkGreenColor,
+                                          fontWeight: FontWeight.w400),
+                                    ),
+                                  ],
+                                ),
+                              ],
                             ),
-                          ));
-                    },
+                          ),
+                        ));
+                      },
+                    ),
                   ),
                   const SizedBox(height: 10),
                   Text(
@@ -1405,7 +1534,13 @@ class SellScrapView extends StatelessWidget {
                   const SizedBox(height: 20),
                   InkWell(
                     onTap: () {
-                      Get.toNamed(Routes.addNewAddressView);
+                      Get.toNamed(Routes.addNewAddressView,arguments:[ {
+                        'type': "edit",
+                      },
+                        {
+                          'screen': "SellScrap",
+                        }
+                      ],);
                     },
                     child: Container(
                       padding: const EdgeInsets.symmetric(
@@ -1487,7 +1622,7 @@ class SellScrapView extends StatelessWidget {
           "Exit",
           style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
         ),
-        content: Text("Do you want to Exit?"),
+        content: const Text("Do you want to Exit?"),
         actions: [
           cancelButton(context),
           continueButton(context),

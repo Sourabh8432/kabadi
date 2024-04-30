@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:kabadi_app/network/urls.dart';
 import 'package:http/http.dart'as http;
@@ -40,10 +41,12 @@ class SignupController extends GetxController {
       hideLoading();
       LoginModels loginModels = LoginModels.fromJson(jsonDecode(response.body));
       if (loginModels.status == 1) {
-
-        Get.toNamed(Routes.otpView, arguments: loginModels.data!.mobile ?? "null");
+        Get.toNamed(Routes.otpView, arguments: number.text.toString());
+        // Get.toNamed(Routes.otpView, arguments: loginModels.data!.mobile ?? "null");
+        Fluttertoast.showToast(msg: "${loginModels.message}");
         print("message : ${loginModels.message}");
       } else {
+        Fluttertoast.showToast(msg: "${loginModels.message}");
         print("message : ${loginModels.message}");
       }
     } catch (e) {

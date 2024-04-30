@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -8,13 +9,14 @@ import 'package:kabadi_app/network/urls.dart';
 import 'package:kabadi_app/utils/app_prefrences.dart';
 // import 'package:otp_autofill/otp_autofill.dart';
 
+import '../../models/login_models.dart';
 import '../../models/otp_models.dart';
 import '../../routes/app_pages.dart';
 
 class OtpController extends GetxController {
   final pinController = TextEditingController();
   final focusNode = FocusNode();
-  RxInt secondsRemaining = 30.obs;
+  RxInt secondsRemaining = 60.obs;
   RxBool enableResend = false.obs;
   late Timer timer;
   RxBool isLoading = false.obs;
@@ -77,6 +79,7 @@ class OtpController extends GetxController {
 
   void resendCode() {
      secondsRemaining = 60.obs;
+     resendOtp(phoneNumber);
      enableResend = false.obs;
     update();
   }
@@ -113,7 +116,9 @@ class OtpController extends GetxController {
         AppPrefrence.putInt("is_new_user", otpModels.data!.isNewUser);
         otpModels.data!.isNewUser!=0?Get.offAllNamed(Routes.enterNameView, arguments: otpModels.data!.user!.userId ?? "" ): Get.offAllNamed(Routes.sellScrapView);
         print("message : ${otpModels.message}");
+        Fluttertoast.showToast(msg: "${otpModels.message}");
       } else {
+        Fluttertoast.showToast(msg: "${otpModels.message}");
         print("message : ${otpModels.message}");
       }
     } catch (e) {
@@ -121,6 +126,28 @@ class OtpController extends GetxController {
     }
   }
 
+  Future<void> resendOtp(String mobileNumber) async {
+    try {
+      showLoading();
+      final url = Uri.parse(Url.loginUrl);
+      final response = await http.post(url,
+          body: {
+            "mobile": mobileNumber
+          });
+      hideLoading();
+      LoginModels loginModels = LoginModels.fromJson(jsonDecode(response.body));
+      if (loginModels.status == 1) {
 
+        Get.toNamed(Routes.otpView, arguments: loginModels.data!.mobile ?? "null");
+        Fluttertoast.showToast(msg: "${loginModels.message}");
+        print("message : ${loginModels.message}");
+      } else {
+        Fluttertoast.showToast(msg: "${loginModels.message}");
+        print("message : ${loginModels.message}");
+      }
+    } catch (e) {
+      print("error : $e");
+    }
+  }
 
 }

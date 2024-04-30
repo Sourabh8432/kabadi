@@ -5,6 +5,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
@@ -21,6 +22,8 @@ import '../../utils/app_prefrences.dart';
 import '../../models/edit_profile_image.dart';
 import 'package:http_parser/http_parser.dart';
 
+import '../sell_scrap/sellscrap_controller.dart';
+
 class SellScrapItemController extends GetxController {
   RxInt currentStep = 0.obs;
 
@@ -29,6 +32,7 @@ class SellScrapItemController extends GetxController {
   RxBool isEditDate = false.obs;
   final List<File> images = [];
   RxBool isLoading = false.obs;
+  RxBool updateMyAddress = false.obs;
   RxString parameter = "".obs;
 
   List<GetPriceData> getAllPriceList = [];
@@ -39,11 +43,13 @@ class SellScrapItemController extends GetxController {
   var getCompleteListData;
   DateListData? selectedDate;
   RxString userId = "".obs;
+  RxString addressId = "".obs;
   List myselection = [];
   List idList = [];
   dynamic myArguments = Get.arguments;
   RxString selectedDateTextWidget = "".obs;
   RxString selectedDateWidget = "".obs;
+  RxString updatedAddress = "".obs;
   TextEditingController instructions = TextEditingController();
 
 
@@ -66,12 +72,10 @@ class SellScrapItemController extends GetxController {
     getUserId();
     currentStep.value = 0;
 
-  //  getSellListApi(myArguments[0]['category_id']);
 
     if (myArguments != null && myArguments.isNotEmpty) {
       getSellListApi(myArguments[0]['category_id']);
     } else {
-      // Handle the case when myArguments is null or empty
       print('myArguments is null or empty');
     }
 
@@ -91,7 +95,9 @@ class SellScrapItemController extends GetxController {
 
   void getUserId() async {
     userId.value = await AppPrefrence.getString('userId');
-    print("Token ${userId.value}");
+    addressId.value = await AppPrefrence.getString("address_id");
+    updatedAddress.value = await AppPrefrence.getString("address");
+    print("updatedAddress $updatedAddress");
     update();
   }
 
@@ -203,9 +209,10 @@ class SellScrapItemController extends GetxController {
       print("getPriceList : ${jsonEncode(getPriceList)}");
       if (getPriceList.status == 1) {
         getAllPriceList = getPriceList.data!;
-
+        Fluttertoast.showToast(msg: "${getPriceList.message}");
         print("message : ${getPriceList.message}");
       } else {
+        Fluttertoast.showToast(msg: "${getPriceList.message}");
         print("message : ${getPriceList.message}");
       }
     } catch (e) {
@@ -426,7 +433,7 @@ class SellScrapItemController extends GetxController {
       body: {
         "user_id": userId.value,
         "price_list": idList.join(','), // Assuming idList is a list of strings/numbers
-        "address_id": "1",
+        "address_id": updateMyAddress==true?addressId.value:"1",
         "pickup_date": formattedDate.toString(),
         "pickup_instructions": instructions.text.toString(),
       },
@@ -448,11 +455,13 @@ class SellScrapItemController extends GetxController {
 
     if (getCompleteList.status == 1) {
       getCompleteListData = getCompleteList.data!;
-
+      Fluttertoast.showToast(msg: "${getCompleteList.message}");
       successfullyPopupDialog(context,getCompleteListData);
       print("getCompleteListData : $getCompleteListData");
       update();
+
     } else {
+      Fluttertoast.showToast(msg: "${getCompleteList.message}");
       print("message : ${getCompleteList.message}");
     }
   }
@@ -551,7 +560,13 @@ class SellScrapItemController extends GetxController {
                       child: GestureDetector(
                         onTap: () {
                           clearData();
+                          SellScrapController listData = Get.find();
+                          listData.selectedIds.clear();
                           Get.toNamed(Routes.sellScrapView);
+                          idList.clear();
+                          myselection.clear();
+                          submitedId.clear();
+                          update();
                         },
                         child: Container(
                           alignment: Alignment.center,
@@ -581,8 +596,21 @@ class SellScrapItemController extends GetxController {
                       flex: 1,
                       child: GestureDetector(
                         onTap: () {
-                          // GetCompleteData getCompleteListData
-                          Get.toNamed(Routes.trackPickupView, arguments: getCompleteListData);
+                          Get.toNamed(
+                            Routes.trackPickupView,
+                            arguments: [
+                              {
+                                'data': getCompleteListData,
+                                'type': "SellScrapItem", // or false, depending on your requirement
+                              }
+                            ],
+                          );
+                          currentStep.value = 0;
+                          idList.clear();
+                          myselection.clear();
+                          submitedId.clear();
+                          update();
+                          // Get.toNamed(Routes.trackPickupView, arguments: getCompleteListData,);
                         },
                         child: Container(
                           padding: const EdgeInsets.symmetric(

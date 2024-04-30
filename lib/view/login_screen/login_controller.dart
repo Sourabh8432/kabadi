@@ -42,9 +42,11 @@ class LoginController extends GetxController {
       LoginModels loginModels = LoginModels.fromJson(jsonDecode(response.body));
       if (loginModels.status == 1) {
 
-        Get.toNamed(Routes.otpView, arguments: loginModels.data!.mobile ?? "null");
+        Get.toNamed(Routes.otpView, arguments: loginModels.data!.mobile.toString());
+        Fluttertoast.showToast(msg: "${loginModels.message}");
         print("message : ${loginModels.message}");
       } else {
+        Fluttertoast.showToast(msg: "${loginModels.message}");
         print("message : ${loginModels.message}");
       }
     } catch (e) {

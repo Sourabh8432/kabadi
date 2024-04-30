@@ -36,13 +36,15 @@ class MyPickupView extends StatelessWidget {
                                 image: DecorationImage(
                                     image: AssetImage(AppImages.pickupAppbar),
                                     fit: BoxFit.fill)),
-                            child: Row(
-                              children: [
-                                GestureDetector(
-                                  onTap: () {
-                                    Get.back();
-                                  },
-                                  child: Container(
+                            child: InkWell(
+                              onTap: () {
+                                Get.back();
+                              },
+                              child: Container(
+                                height: 40,
+                              child: Row(
+                                children: [
+                                  Container(
                                     margin:
                                     const EdgeInsets.symmetric(horizontal: 20),
                                     child: SvgPicture.asset(
@@ -50,19 +52,19 @@ class MyPickupView extends StatelessWidget {
                                       color: whiteColor,
                                     ),
                                   ),
-                                ),
-                                const SizedBox(
-                                  width: 15,
-                                ),
-                                Text("myPickupRequests".tr,
-                                    style: TextStyle(
-                                        fontSize: 18,
-                                        fontFamily: "Poppins",
-                                        color: whiteColor,
-                                        fontWeight: FontWeight.w600)),
-                              ],
+                                  const SizedBox(
+                                    width: 15,
+                                  ),
+                                  Text("myPickupRequests".tr,
+                                      style: TextStyle(
+                                          fontSize: 18,
+                                          fontFamily: "Poppins",
+                                          color: whiteColor,
+                                          fontWeight: FontWeight.w600)),
+                                ],
+                              ),
                             ),
-                          ),
+                          ),),
                           const SizedBox(height: 25),
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -74,7 +76,7 @@ class MyPickupView extends StatelessWidget {
                                     fontWeight: FontWeight.w400)),
                           ),
                           Container(
-                            padding:  EdgeInsets.symmetric(horizontal: controller.pickupRequestsList!.upcoming!.isEmpty ?20:0),
+                            padding:  EdgeInsets.symmetric(horizontal: controller.pickupRequestsList!.upcoming!.isEmpty ?20:20),
                             child: Column(crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
 
@@ -99,7 +101,14 @@ class MyPickupView extends StatelessWidget {
                                     // controller.isComandata(upcomingList.pickupStatus!,[] as PickupRequestPrevious,controller.pickupRequestsList!.upcoming![index],true );
 
                                     if(upcomingList.pickupStatus == "Upcoming"){
-                                      Get.toNamed(Routes.trackPickupView,arguments: controller.pickupRequestsList!.upcoming?[index]);
+                                      Get.toNamed(Routes.trackPickupView,
+                                          arguments: [
+                                            {
+                                              'data': controller.pickupRequestsList!.upcoming?[index],
+                                              'type': "SellScrapItem", // or false, depending on your requirement
+                                            }
+                                          ],);
+                                      // Get.toNamed(Routes.trackPickupView,arguments: controller.pickupRequestsList!.upcoming?[index]);
                                     }else if (upcomingList.pickupStatus == "Completed"){
                                       Get.toNamed(Routes.requestCancelledView, arguments: controller.pickupRequestsList!.upcoming?[index] );
                                     }else {
@@ -204,8 +213,8 @@ class MyPickupView extends StatelessWidget {
                                                     Text(
                                                         upcomingList
                                                             .pickupItemsName
-                                                            !.length > 30 ? upcomingList
-                                                            .pickupItemsName!.substring(0, 30)+'...' : upcomingList
+                                                            !.length > 30 ? '${upcomingList
+                                                            .pickupItemsName!.substring(0, 30)}...' : upcomingList
                                                             .pickupItemsName.toString(),
                                                         style: TextStyle(
                                                             overflow: TextOverflow.ellipsis,
@@ -244,7 +253,13 @@ class MyPickupView extends StatelessWidget {
                                   return InkWell(
                                     onTap: (){
                                       if(previousList.pickupStatus == "Upcoming"){
-                                        Get.toNamed(Routes.trackPickupView,arguments: controller.pickupRequestsList!.previous?[index]);
+                                        Get.toNamed(Routes.trackPickupView,arguments: [
+                                          {
+                                            'data': controller.pickupRequestsList!.previous?[index],
+                                            'type': "SellScrapItem", // or false, depending on your requirement
+                                          }
+                                        ],);
+                                        // Get.toNamed(Routes.trackPickupView,arguments: controller.pickupRequestsList!.previous?[index]);
                                       }else if (previousList.pickupStatus == "Completed"){
                                         Get.toNamed(Routes.requestCancelledView, arguments: controller.pickupRequestsList!.previous?[index] );
                                       }else {

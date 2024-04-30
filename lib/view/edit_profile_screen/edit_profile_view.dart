@@ -34,23 +34,27 @@ class EditProfileView extends StatelessWidget {
                               image: AssetImage(AppImages.pickupAppbar),
                               fit: BoxFit.fill)),
                       child: InkWell(
-                        onTap: () => onTapArrowLeft(),
-                        child: Row(
-                          children: [
-                            Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 20,vertical: 5),
-                              child: SvgPicture.asset(
-                                AppImages.backArrow,
-                                color: whiteColor,
+                        onTap: () => onTapArrowLeft(controller),
+                        child: SizedBox(
+                          width: 200,
+                          height: 40,
+                          child: Row(
+                            children: [
+                              Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 20,vertical: 5),
+                                child: SvgPicture.asset(
+                                  AppImages.backArrow,
+                                  color: whiteColor,
+                                ),
                               ),
-                            ),
-                            Text("editProfile".tr,
-                                style: TextStyle(
-                                    fontSize: 18,
-                                    fontFamily: "Poppins",
-                                    color: whiteColor,
-                                    fontWeight: FontWeight.w600)),
-                          ],
+                              Text("editProfile".tr,
+                                  style: TextStyle(
+                                      fontSize: 18,
+                                      fontFamily: "Poppins",
+                                      color: whiteColor,
+                                      fontWeight: FontWeight.w600)),
+                            ],
+                          ),
                         ),
                       ),
                     ),
@@ -72,21 +76,29 @@ class EditProfileView extends StatelessWidget {
                               backgroundColor: whiteColor,
                               radius: 55,
                               child: ClipOval(
-                                child: controller.profileImage.isEmpty
-                                    ? Image.network(controller.myArguments[2]['image'],fit: BoxFit.cover,width: 100,errorBuilder: (context, error, stackTrace) {
+                                child: controller.selfiePath.isEmpty?
+                                controller.profileImage.isEmpty
+                                    ? Image.network(controller.myArguments[2]['image'],fit: BoxFit.fill,width: 100,height: 100,errorBuilder: (context, error, stackTrace) {
                                   return Image.asset(AppImages.profile,fit: BoxFit.fill,width: 100,);
-                                    },)
+                                },)
                                     : Image.network(controller.profileImage,
                                   fit: BoxFit.fill,
                                   width: 100,
+                                  height: 100,
+                                )
+                                    : Image.file(
+                                  fit: BoxFit.fill,
+                                  width: 200,
+                                  File(controller.selfiePath.value),
                                 ),
+
+
+
                               ),),
 
                             InkWell(
                               onTap: (){
-                                controller.getSelfieImage(context, ImageSource.camera).then((value) {
-                                  controller.editProfileImage(controller.selfiePath.value);
-                                });
+                                showOptionsDialog(context, controller);
 
                               },
                               child: Container(
@@ -119,8 +131,10 @@ class EditProfileView extends StatelessWidget {
                                 Expanded(
                                   child: TextFormField(
                                     controller: controller.name,
-                                    style: const TextStyle(fontSize: 18,letterSpacing: 1.6),
-                                    decoration: const InputDecoration(
+                                    style: const TextStyle(fontSize: 16,letterSpacing: 1.3,color: Colors.black),
+                                    decoration:  InputDecoration(
+                                      hintText: controller.getName.value,
+                                      hintStyle: TextStyle(color: textColor.withOpacity(0.4),fontWeight: FontWeight.normal),
                                       border: InputBorder.none,
                                     ),
                                   ),
@@ -148,9 +162,12 @@ class EditProfileView extends StatelessWidget {
                               children: [
                                 Expanded(
                                   child: TextFormField(
+                                    readOnly: true,
                                     controller: controller.editLocationname,
-                                    style: const TextStyle(fontSize: 18,letterSpacing: 1.6),
-                                    decoration: const InputDecoration(
+                                    style: const TextStyle(fontSize: 16,letterSpacing: 1.3,color: Colors.black),
+                                    decoration:  InputDecoration(
+                                      hintText: controller.number.value,
+                                      hintStyle: TextStyle(color: textColor.withOpacity(0.4),fontWeight: FontWeight.normal),
                                       border: InputBorder.none,
                                     ),
                                   ),
@@ -179,8 +196,10 @@ class EditProfileView extends StatelessWidget {
                                 Expanded(
                                   child: TextFormField(
                                     controller: controller.editEmail,
-                                    style: const TextStyle(fontSize: 18,letterSpacing: 1.6),
-                                    decoration: const InputDecoration(
+                                    style: const TextStyle(fontSize: 16,letterSpacing: 1.3,color: Colors.black),
+                                    decoration:  InputDecoration(
+                                      hintText: controller.email.value,
+                                      hintStyle: TextStyle(color: textColor.withOpacity(0.4),fontWeight: FontWeight.normal),
                                       border: InputBorder.none,
                                     ),
                                   ),
@@ -218,8 +237,11 @@ class EditProfileView extends StatelessWidget {
             onTap: () {
               if(controller.name.text.toString().isEmpty){
                 Fluttertoast.showToast(msg: "Please Enter Your Name");
-              }else {
-                controller.editProfile(controller.name.text.toString(), controller.editLocationname.text.isEmpty ? "":controller.editLocationname.text.toString(), controller.editEmail.text.isEmpty ? "":controller.editEmail.text.toString());
+              } else {
+
+                controller.editProfile(controller.name.text.toString(), controller.editLocationname.text.isEmpty ? "":controller.editLocationname.text.toString(), controller.editEmail.text.isEmpty ? "":controller.editEmail.text.toString()).then((value) {
+                  controller.editProfileImage(controller.selfiePath.value);
+                });
               }
             },
             child: Container(
@@ -246,7 +268,67 @@ class EditProfileView extends StatelessWidget {
       ],
     );
   }
-  onTapArrowLeft() {
+
+  onTapArrowLeft(EditProfileController controller) {
+
     Get.back();
+    controller.profilePage.profileApi();
+  }
+
+  Future<void> showOptionsDialog(BuildContext context, EditProfileController controller) {
+    return showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title:  Text(
+              "selectImage".tr,
+              style: const TextStyle(fontSize: 20,fontFamily: "MPLUS",fontWeight: FontWeight.bold),
+            ),
+            content: SingleChildScrollView(
+              child: ListBody(
+                children: [
+                  const Divider(height: 2,thickness: 2,),
+                  const SizedBox(height: 20,),
+                  GestureDetector(
+                    child:  Text(
+                      "camera".tr,
+                      style: const TextStyle(fontSize: 18,fontFamily: "MPLUS",fontWeight: FontWeight.normal),
+                    ),
+                    onTap: () {
+                      Get.back();
+                      controller.getSelfieImage(context, ImageSource.camera);
+                    },
+                  ),
+                  const Padding(padding: EdgeInsets.all(10)),
+                  GestureDetector(
+                    child:  Text(
+                      "gallery".tr,
+                      style: const TextStyle(fontSize: 18,fontFamily: "MPLUS",fontWeight: FontWeight.normal),
+                    ),
+                    onTap: () {
+                      Get.back();
+                      controller.getSelfieImage(context, ImageSource.gallery);
+                    },
+                  ),
+                  const Padding(padding: EdgeInsets.all(15)),
+
+                  Container(
+                    width:Get.width,
+                    alignment: Alignment.centerRight,
+                    child: GestureDetector(
+                      child:  Text(
+                        "Cancel",
+                        style: TextStyle(color: darkGreenColor,fontSize: 16,fontFamily: "MPLUS",fontWeight: FontWeight.normal),
+                      ),
+                      onTap: () {
+                        Get.back();
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        });
   }
 }

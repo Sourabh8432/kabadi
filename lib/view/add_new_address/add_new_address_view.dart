@@ -21,42 +21,44 @@ class AddNewAddressView extends StatelessWidget {
     return GetBuilder<AddNewAddressController>(
         init: AddNewAddressController(),
         builder: (controller) {
-          print(
-              "markerLocation: ${controller.markerLocation.latitude}, Lng: ${controller.markerLocation.longitude}");
           return Scaffold(
             body: Stack(
               children: [
                 Stack(
                   alignment: Alignment.topCenter,
                   children: [
+                    controller.markerLocation== null ?Container(
+                      width: Get.width,
+                      height: Get.height,
+                      color: whiteColor.withOpacity(0.4),
+                      child: Center(
+                        child: CircularProgressIndicator(
+                            color: primaryColor, backgroundColor: whiteColor),
+                      ),
+                    ):
                     GoogleMap(
                       onMapCreated: (controller) {
                         _onMapCreated(controller);
                       },
-                      initialCameraPosition: CameraPosition(
-                        target: controller
-                            .markerLocation, // Use markerLocation as initial position
-                        zoom: 10,
-                      ),
+                      initialCameraPosition: controller.getInitialCameraPosition(controller.markerLocation!),
                       markers: <Marker>{
                         Marker(
                           markerId: const MarkerId("1"),
-                          position: controller
-                              .markerLocation, // Update marker position here
+                          position: controller.markerLocation!,
                           infoWindow: InfoWindow(
                             title: "Marker",
-                            snippet:
-                                "Lat: ${controller.markerLocation.latitude}, Lng: ${controller.markerLocation.longitude}",
+                            snippet: "Lat: ${controller.markerLocation?.latitude}, Lng: ${controller.markerLocation?.longitude}",
                           ),
                           onTap: () {
-                            _onMapTap(controller.markerLocation);
+                            _onMapTap(controller.markerLocation!);
+                            controller.update();
                           },
                         ),
                       },
                       circles: <Circle>{
                         Circle(
                           circleId: const CircleId("radius"),
-                          center: controller.markerLocation,
+                          center: controller.markerLocation!,
                           radius: 500,
                           fillColor: Colors.red.withOpacity(0.2),
                           strokeColor: Colors.red,
@@ -65,13 +67,20 @@ class AddNewAddressView extends StatelessWidget {
                       },
                       onTap: _onMapTap,
                       zoomControlsEnabled: false,
-
-                      // Update camera position to focus on marker whenever markerLocation changes
                       onCameraMove: (CameraPosition position) {
-                        controller.markerLocation = position.target;
-                        controller.update();
+
+                        Future.delayed(const Duration(seconds: 1), (){
+
+                          controller.markerLocation = position.target;
+                          print("SSK : ${position.target}");
+
+                        });
+
                       },
+                      myLocationButtonEnabled: true, // Enable the button
+                      myLocationEnabled: true,
                     ),
+
                     Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
@@ -83,31 +92,35 @@ class AddNewAddressView extends StatelessWidget {
                               image: DecorationImage(
                                   image: AssetImage(AppImages.pickupAppbar),
                                   fit: BoxFit.fill)),
-                          child: Row(
-                            children: [
-                              GestureDetector(
-                                onTap: () {
-                                  Get.back();
-                                },
-                                child: Container(
-                                  margin:
-                                      const EdgeInsets.symmetric(horizontal: 20),
-                                  child: SvgPicture.asset(
-                                    AppImages.backArrow,
-                                    color: whiteColor,
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(
-                                width: 15,
-                              ),
-                              Text("setLocation".tr,
-                                  style: TextStyle(
-                                      fontSize: 18,
-                                      fontFamily: "Poppins",
+                          child: Container(
+                            height: 40,
+
+                            child: InkWell(
+                              onTap: () {
+                                Get.back();
+                              },
+                              child: Row(
+                                children: [
+                                  Container(
+                                    margin:
+                                        const EdgeInsets.symmetric(horizontal: 20),
+                                    child: SvgPicture.asset(
+                                      AppImages.backArrow,
                                       color: whiteColor,
-                                      fontWeight: FontWeight.w600)),
-                            ],
+                                    ),
+                                  ),
+                                  const SizedBox(
+                                    width: 15,
+                                  ),
+                                  Text("setLocation".tr,
+                                      style: TextStyle(
+                                          fontSize: 18,
+                                          fontFamily: "Poppins",
+                                          color: whiteColor,
+                                          fontWeight: FontWeight.w600)),
+                                ],
+                              ),
+                            ),
                           ),
                         ),
                         const SizedBox(
@@ -115,7 +128,7 @@ class AddNewAddressView extends StatelessWidget {
                         ),
                         Container(
                           margin: const EdgeInsets.symmetric(horizontal: 20),
-                          padding: EdgeInsets.only(left: 20),
+                          padding: const EdgeInsets.only(left: 20),
                           decoration: BoxDecoration(
                               color: Colors.white,
                               border: Border.all(width: 1, color: borderColor),
@@ -129,8 +142,6 @@ class AddNewAddressView extends StatelessWidget {
                                       fontSize: 18, letterSpacing: 1.6),
                                   onChanged: (value) {
                                     controller.getSearchAddress(value);
-
-
                                   },
                                   decoration: InputDecoration(
 
@@ -154,7 +165,9 @@ class AddNewAddressView extends StatelessWidget {
                             ],
                           ),
                         ),
-                        Spacer(),
+                        const Spacer(),
+                        Container(width: Get.width,margin:const EdgeInsets.only(right: 20),alignment: Alignment.centerRight,child: InkWell(onTap: () => controller.getMyAddress(),child: Container(padding: const EdgeInsets.all(5),decoration:BoxDecoration(border: Border.all(color: Colors.grey)),child: const Icon(Icons.my_location,color: Colors.grey,)))),
+                        const SizedBox(height: 15,),
                         GestureDetector(
                           onTap: () {
                             controller.localityController.clear();
@@ -438,7 +451,14 @@ class AddNewAddressView extends StatelessWidget {
                      if(controller.locationType.value.isEmpty){
                        Fluttertoast.showToast(msg: "Please choose Location Type");
                      }else {
-                       controller.addAddress(controller.locationType.value, controller.locality.value, controller.addressLine.value, controller.pincode.value, controller.markerLocation.latitude.toString(), controller.markerLocation.latitude.toString());
+                       print("edit ${controller.myArguments[1]["screen"]}");
+                       if(controller.myArguments[0]["type"] == "edit"){
+                         controller.editAddress(controller.locationType.value, controller.locality.value, controller.addressLine.value, controller.pincode.value, controller.markerLocation!.latitude.toString(), controller.markerLocation!.latitude.toString(),controller.addressId.value);
+                       }else{
+                         controller.addAddress(controller.locationType.value, controller.locality.value, controller.addressLine.value, controller.pincode.value, controller.markerLocation!.latitude.toString(), controller.markerLocation!.latitude.toString());
+                       }
+
+
                      }
 
                     },

@@ -305,8 +305,10 @@
 //   }
 // }
 import 'dart:convert';
+import 'dart:developer';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:get/get.dart';
 import 'package:kabadi_app/network/urls.dart';
@@ -352,14 +354,16 @@ class SellScrapController extends GetxController {
     super.onInit();
     // getSaveName();
     checkLocationPermissionAndInit();
+    getSaveName();
 
-    getMyToken();
   }
 
   getSaveName()async{
+    getToken.value = await AppPrefrence.getString('token');
     saveName.value = await AppPrefrence.getString("save_name");
     profileImage.value = await AppPrefrence.getString("profile_image");
-    print("saveName.value  ${saveName.value}");
+
+    print("token  ${getToken.value}");
     update();
   }
 
@@ -393,11 +397,7 @@ class SellScrapController extends GetxController {
     }
   }
 
-  void getMyToken() async {
-    getToken.value = await AppPrefrence.getString('token');
-    print("Token ${getToken.value}");
-    update();
-  }
+
 
   Future<String> getCurrentLocation() async {
     showLoading();
@@ -449,11 +449,12 @@ class SellScrapController extends GetxController {
         getCategoryApi();
         getPriceListApi();
         profileApi();
-        getSaveName();
+        // getSaveName();
         myAddressApi();
-
+        // Fluttertoast.showToast(msg: "${getLocatonModels.message}");
         update();
       } else {
+        // Fluttertoast.showToast(msg: "${getLocatonModels.message}");
         isAddressChecker.value = true;
         update();
         showMessage.value = getLocatonModels.message!;
@@ -482,7 +483,9 @@ class SellScrapController extends GetxController {
       if (getCategoryModels.status == 1) {
         getCategoryList = getCategoryModels.data!;
         update();
+        // Fluttertoast.showToast(msg: "${getCategoryModels.message}");
       } else {
+        Fluttertoast.showToast(msg: "${getCategoryModels.message}");
         print("message : ${getCategoryModels.message}");
       }
     } catch (e) {
@@ -502,12 +505,16 @@ class SellScrapController extends GetxController {
         },
       );
       hideLoading();
+
       MyAddress myAddress = MyAddress.fromJson(jsonDecode(response.body));
+      print("myAddressUrl : ${jsonEncode(myAddress)}");
       if (myAddress.status == 1) {
         myAddressData = myAddress.data!;
+        // Fluttertoast.showToast(msg: "${myAddress.message}");
         update();
         print("message : ${myAddress.message}");
       } else {
+        // Fluttertoast.showToast(msg: "${myAddress.message}");
         print("message : ${myAddress.message}");
       }
     } catch (e) {
@@ -529,11 +536,14 @@ class SellScrapController extends GetxController {
       hideLoading();
       GetPriceList getPriceList =
           GetPriceList.fromJson(jsonDecode(response.body));
+      log("object : ${jsonEncode(getPriceList)}");
       if (getPriceList.status == 1) {
         getAllPriceList = getPriceList.data!;
         update();
+        // Fluttertoast.showToast(msg: "${getPriceList.message}");
         print("message : ${getPriceList.message}");
       } else {
+        // Fluttertoast.showToast(msg: "${getPriceList.message}");
         print("message : ${getPriceList.message}");
       }
     } catch (e) {
@@ -541,20 +551,31 @@ class SellScrapController extends GetxController {
     }
   }
 
-  void filterPriceList(String query) {
-    print("query : $query");
+  // void filterPriceList(String query) {
+  //   print("query : $query");
+  //   if (query.isEmpty) {
+  //     // If the query is empty, show all items
+  //     getAllPriceList = getAllPriceList;
+  //   } else {
+  //     print("getAllPriceList1 : ${jsonEncode(getAllPriceList)}");
+  //     // Filter items whose names start with the query (case-insensitive)
+  //     getAllPriceList = getAllPriceList
+  //         .where((item) => item.name.toString().toLowerCase().startsWith(query.toLowerCase()))
+  //         .toList();
+  //     print("getAllPriceList : $getAllPriceList");
+  //   }
+  //   update();
+  // }
+
+  List<GetPriceData> filterCategories(String query) {
     if (query.isEmpty) {
-      // If the query is empty, show all items
-      getAllPriceList = getAllPriceList;
+      return getAllPriceList ?? [];
     } else {
-      print("getAllPriceList1 : ${jsonEncode(getAllPriceList)}");
-      // Filter items whose names start with the query (case-insensitive)
-      getAllPriceList = getAllPriceList
-          .where((item) => item.name.toString().toLowerCase().startsWith(query.toLowerCase()))
-          .toList();
-      print("getAllPriceList : $getAllPriceList");
+      return getAllPriceList?.where((category) {
+        return category.subCategories!.any((subCategory) =>
+        subCategory.name?.toLowerCase().contains(query.toLowerCase()) ?? false);
+      }).toList() ?? [];
     }
-    update();
   }
 
   Future<void> addAddressApi() async {
@@ -573,8 +594,10 @@ class SellScrapController extends GetxController {
           AddAddressModels.fromJson(jsonDecode(response.body));
       if (addAddressModels.status == 1) {
         update();
+        // Fluttertoast.showToast(msg: "${addAddressModels.message}");
         print("message : ${addAddressModels.message}");
       } else {
+        // Fluttertoast.showToast(msg: "${addAddressModels.message}");
         print("message : ${addAddressModels.message}");
       }
     } catch (e) {
@@ -601,8 +624,10 @@ class SellScrapController extends GetxController {
         profileList = profileModel.data!;
         AppPrefrence.putString("profile_image", profileModel.data?.image ?? "");
         update();
+        // Fluttertoast.showToast(msg: "${profileModel.message}");
         print("message : ${profileModel.message}");
       } else {
+        // Fluttertoast.showToast(msg: "${profileModel.message}");
         print("message : ${profileModel.message}");
       }
     } catch (e) {

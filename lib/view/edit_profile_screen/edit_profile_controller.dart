@@ -20,17 +20,30 @@ class EditProfileController extends GetxController {
   var profileData;
   String profileImage = "";
   RxString userId = "".obs;
+  RxString number = "".obs;
+  RxString getName = "".obs;
+  RxString email = "".obs;
   TextEditingController name = TextEditingController();
   TextEditingController editLocationname = TextEditingController();
   TextEditingController editEmail = TextEditingController();
   ProfileController profilePage = Get.find();
 
+
   @override
   void onInit() {
     // TODO: implement onInit
     super.onInit();
+    getNumber();
     print("object : ${myArguments[2]['image']}");
   }
+
+  void getNumber() async{
+    number.value = await AppPrefrence.getString('mobile');
+    getName.value = await AppPrefrence.getString('name');
+    email.value = await AppPrefrence.getString('email');
+    update();
+  }
+
 
   void showLoading() {
     isLoading(true);
@@ -78,6 +91,7 @@ class EditProfileController extends GetxController {
         profileData = editProfile.data!;
         Fluttertoast.showToast(msg: editProfile.message!);
         print("message : ${editProfile.message}");
+        Get.back();
         profilePage.profileApi();
         update();
       } else {
@@ -112,7 +126,8 @@ class EditProfileController extends GetxController {
         EditImageUpload editImageUpload =
             EditImageUpload.fromJson(jsonResponse);
         profileImage = editImageUpload.data!;
-        print("profileImage : $profileImage");
+        AppPrefrence.putString("profile_image", editImageUpload.data ?? "");
+        print("profileImage : ${jsonEncode(editImageUpload)}");
         profilePage.profileApi();
         update();
         print("Image Uploaded Successfully");

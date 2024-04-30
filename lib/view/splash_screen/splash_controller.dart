@@ -32,7 +32,7 @@ class SplashController extends GetxController {
         }
       else
         {
-          Get.offNamed(Routes.chooseLanguageView);
+          Get.offNamed(Routes.welcomeView);
         }
     }),
 

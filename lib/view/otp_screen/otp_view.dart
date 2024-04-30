@@ -131,9 +131,7 @@ class OtpView extends StatelessWidget {
                                       ),
                                       const SizedBox(width: 10),
                                       InkWell(onTap: () {
-                                        controller.enableResend.value
-                                            ? controller.resendCode()
-                                            : null;
+                                        controller.enableResend.value ? controller.resendCode() : null;
                                         controller.update();
                                       },
                                         child:  Text(
@@ -231,6 +229,4 @@ class OtpView extends StatelessWidget {
     Get.back();
   }
 
-  /// Navigates to the whatsYourNameScreen when the action is triggered.
-  onTapContinue() {}
 }

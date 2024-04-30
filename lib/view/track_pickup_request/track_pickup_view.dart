@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -8,6 +10,7 @@ import 'package:kabadi_app/utils/app_images.dart';
 import 'package:pinput/pinput.dart';
 import '../../models/get_complete_list.dart';
 import '../../routes/app_pages.dart';
+import '../sell_scrap/sellscrap_controller.dart';
 import 'track_pickup_controller.dart';
 
 class TrackPickupView extends StatelessWidget {
@@ -36,26 +39,41 @@ class TrackPickupView extends StatelessWidget {
                   children: [
                     InkWell(
                       onTap: () {
-                        Get.back();
+                        if(controller.myData[0]["type"] == "SellScrapItem"){
+                          Get.toNamed(Routes.sellScrapView);
+                          SellScrapController listData = Get.find();
+                          listData.selectedIds.clear();
+                        }else {
+                          Get.back();
+                        }
+
                       },
-                      child: Container(
-                        margin: const EdgeInsets.symmetric(horizontal: 20),
-                        child: SvgPicture.asset(
-                          AppImages.backArrow,
-                          color: whiteColor,
-                        ),
+                      child: SizedBox(
+                        height: 40,
+                      child: Row(
+                        children: [
+                          Container(
+                            margin: const EdgeInsets.symmetric(horizontal: 20),
+                            child: SvgPicture.asset(
+                              AppImages.backArrow,
+                              color: whiteColor,
+                            ),
+                          ),
+                          const SizedBox(width: 15),
+                          Text(
+                           "trackPickupRequest".tr,
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontFamily: "Poppins",
+                              color: whiteColor,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+
+                        ],
                       ),
                     ),
-                    const SizedBox(width: 15),
-                    Text(
-                     "trackPickupRequest".tr,
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontFamily: "Poppins",
-                        color: whiteColor,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
+                                  ),
                     const Spacer(),
                     Padding(
                       padding: const EdgeInsets.only(right: 10),
@@ -67,9 +85,11 @@ class TrackPickupView extends StatelessWidget {
                         onSelected: (value) {
                           if (value == "reschedule") {
                             Get.toNamed(Routes.rescheduleView,
-                                arguments:
-                                controller.myData.pickupRequestId.toString() ??
-                                    "");
+                                arguments:[{
+                              "type" : "edited",
+                            "data": controller.myData[0]["data"].pickupRequestId,
+                            }]);
+
                           } else {
                             controller.pickupCancelListApi().then((value) {
                               _showCancelPopup(context, controller);
@@ -92,8 +112,7 @@ class TrackPickupView extends StatelessWidget {
                       ),
                     ),
                   ],
-                ),
-              ),
+                ),),
               Padding(
                 padding:
                 const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
@@ -268,7 +287,10 @@ class TrackPickupView extends StatelessWidget {
                         InkWell(
                           onTap: () {
                             Get.toNamed(Routes.rescheduleView,
-                                arguments:controller.myData.pickupRequestId.toString() ?? "");
+                                arguments:[{
+                                  "type" : "edited",
+                                  "data": controller.myData[0]["data"].pickupRequestId,
+                                }]);
                           },
                           child: Container(
                             height: 30,
@@ -306,7 +328,8 @@ class TrackPickupView extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          controller.myData.pickupDate ?? "",
+                         controller.isEdited.value== true?controller.editedData.value:controller.myData[0]["data"].pickupDate.toString(),
+                          // controller.myData.pickupDate ?? "",
                           style: TextStyle(
                             fontSize: 14,
                             fontFamily: "Poppins",
@@ -316,7 +339,8 @@ class TrackPickupView extends StatelessWidget {
                         ),
                         const SizedBox(height: 5),
                         Text(
-                          controller.myData.pickupTime ?? "",
+                          controller.myData[0]["data"].pickupTime.toString(),
+                          // controller.myData.pickupTime ?? "",
                           style: TextStyle(
                             fontSize: 12,
                             fontFamily: "Poppins",
@@ -340,12 +364,13 @@ class TrackPickupView extends StatelessWidget {
                     SizedBox(
                       height: 40,
                       child: ListView.builder(
-                        itemCount: controller.myData.pickupItems?.length ?? 0,
+
+                        itemCount: controller.myData[0]["data"].pickupItems.length,
                         shrinkWrap: true,
                         scrollDirection: Axis.horizontal,
                         itemBuilder: (context, index) {
-                          var items =
-                          controller.myData.pickupItems?[index];
+                          var items = controller.myData[0]["data"].pickupItems[index];
+                          // controller.myData.pickupItems?[index];
                           return Container(
                             alignment: Alignment.center,
                             padding: const EdgeInsets.symmetric(horizontal: 15),
@@ -355,7 +380,7 @@ class TrackPickupView extends StatelessWidget {
                               borderRadius: BorderRadius.circular(40),
                             ),
                             child: Text(
-                              items?.priceListName ?? "",
+                              items.priceListName ?? "",
                               style: TextStyle(
                                 fontSize: 14,
                                 fontFamily: "Poppins",
@@ -382,7 +407,7 @@ class TrackPickupView extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          controller.myData.pickupAddress?.locationType ?? "",
+                          controller.myData[0]["data"].pickupAddress.locationType.toString(),
                           style: TextStyle(
                             fontSize: 14,
                             fontFamily: "Poppins",
@@ -392,7 +417,8 @@ class TrackPickupView extends StatelessWidget {
                         ),
                         const SizedBox(height: 5),
                         Text(
-                          "${controller.myData.pickupAddress?.locality ?? ""}, ${controller.myData.pickupAddress?.addressLine ?? ""}",
+
+                          "${controller.myData[0]["data"].pickupAddress.locality.toString()}, ${controller.myData[0]["data"].pickupAddress.addressLine.toString()}",
                           style: TextStyle(
                             fontSize: 12,
                             fontFamily: "Poppins",
@@ -414,7 +440,8 @@ class TrackPickupView extends StatelessWidget {
                     ),
                     const SizedBox(height: 10),
                     Text(
-                      controller.myData.pickupInstructions ?? "",
+                     controller.myData[0]["data"].pickupInstructions.toString(),
+                      // controller.myData.pickupInstructions ?? "",
                       style: TextStyle(
                         fontSize: 12,
                         fontFamily: "Poppins",

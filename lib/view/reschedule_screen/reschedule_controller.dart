@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:kabadi_app/network/urls.dart';
@@ -14,7 +15,7 @@ class RescheduleController extends GetxController {
   DateListData? selectedDate;
   RxString selectedDateTextWidget = "".obs;
   RxString selectedDateWidget = "".obs;
-  String rescheduleId = Get.arguments;
+  var rescheduleId = Get.arguments;
   TrackPickupController trackPickup = Get.find();
 
 
@@ -78,11 +79,12 @@ class RescheduleController extends GetxController {
       PickupReschedule pickupReschedule =
       PickupReschedule.fromJson(jsonDecode(response.body));
       if (pickupReschedule.status == 1) {
-
         Get.back();
         trackPickup.update();
+        Fluttertoast.showToast(msg: "${pickupReschedule.message}");
         print("message : ${pickupReschedule.message}");
       } else {
+        Fluttertoast.showToast(msg: "${pickupReschedule.message}");
         print("message : ${pickupReschedule.message}");
       }
     } catch (e) {

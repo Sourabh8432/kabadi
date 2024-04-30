@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 import 'package:get/get.dart';
 import 'package:kabadi_app/network/urls.dart';
@@ -60,8 +61,10 @@ class MyPickupController extends GetxController {
 
       if (pickupRequestModels.status == 1) {
         pickupRequestsList = pickupRequestModels.data!;
+        Fluttertoast.showToast(msg: "${pickupRequestModels.message}");
         print("message : ${pickupRequestModels.message}");
       } else {
+        Fluttertoast.showToast(msg: "${pickupRequestModels.message}");
         print("message : ${pickupRequestModels.message}");
       }
     } catch (e) {

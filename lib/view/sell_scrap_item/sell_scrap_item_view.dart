@@ -59,13 +59,16 @@ class SellScrapItemView extends StatelessWidget {
                             fit: BoxFit.fill,
                           ),
                         ),
-                        child: Row(
-                          children: [
-                            InkWell(
-                              onTap: () {
-                                Get.back();
-                              },
-                              child: Container(
+                        child: InkWell(
+                          onTap: () {
+                            Get.back();
+                          },
+                          child: Container(
+                            width: 200,
+                            height: 40,
+                          child: Row(
+                            children: [
+                              Container(
                                 margin:
                                 const EdgeInsets.symmetric(horizontal: 20),
                                 child: SvgPicture.asset(
@@ -73,22 +76,22 @@ class SellScrapItemView extends StatelessWidget {
                                   color: whiteColor,
                                 ),
                               ),
-                            ),
-                            const SizedBox(
-                              width: 15,
-                            ),
-                            Text(
-                              "sellScrap".tr,
-                              style: TextStyle(
-                                fontSize: 18,
-                                fontFamily: "Poppins",
-                                color: whiteColor,
-                                fontWeight: FontWeight.w600,
+                              const SizedBox(
+                                width: 15,
                               ),
-                            ),
-                          ],
+                              Text(
+                                "sellScrap".tr,
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontFamily: "Poppins",
+                                  color: whiteColor,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
+                      ),),
                       const SizedBox(
                         height: 20,
                       ),
@@ -299,7 +302,7 @@ class SellScrapItemView extends StatelessWidget {
                                                   .categoryId) ??
                                                   false;
 
-                                              return InkWell(
+                                              return GestureDetector(
                                                 onTap: () {
                                                   controller.toggleCategorySelection(getList.id ?? 0, getList.categoryId ?? 0, getList.name ?? "", getList.priceUnit ?? "", getList.weightUnit ?? "",controller.submitedId);
                                                   controller.idList = controller.submitedId.map((item) => item.id).toList();
@@ -457,6 +460,8 @@ class SellScrapItemView extends StatelessWidget {
                                     ),
                                   ],
                                 ),
+
+
                                 // Row(
                                 //   children: [
                                 //     Stack(
@@ -742,7 +747,7 @@ class SellScrapItemView extends StatelessWidget {
                                 ],
                               ),
                             ),
-                            Padding(
+                            controller.getUploadImageUrl.isEmpty? SizedBox():Padding(
                               padding: const EdgeInsets.symmetric(
                                   horizontal: 15, vertical: 10),
                               child: Column(
@@ -818,7 +823,15 @@ class SellScrapItemView extends StatelessWidget {
                                         ),
                                         const Spacer(),
                                         InkWell(
-                                          onTap: () {},
+                                          onTap: () {
+                                            Get.toNamed(Routes.addNewAddressView,arguments:[ {
+                                              'type': "edit",
+                                            },
+                                              {
+                                                'screen': "SellScrapItem",
+                                              }
+                                            ],);
+                                          },
                                           child: Container(
                                             height: 30,
                                             alignment: Alignment.center,
@@ -865,7 +878,7 @@ class SellScrapItemView extends StatelessWidget {
                                     padding:
                                     const EdgeInsets.only(top: 15),
                                     child: Text(
-                                      controller.myArguments[1]['address'],
+                                      (controller.updateMyAddress.value)?controller.updatedAddress.toString():controller.myArguments[1]['address'],
                                       style: TextStyle(
                                         fontSize: 14,
                                         fontFamily: "Poppins",
@@ -1050,11 +1063,18 @@ class SellScrapItemView extends StatelessWidget {
             onTap: () {
               print("isEdit : ${controller.isEdit.value}");
 
-              if(controller.isEdit.value == true || controller.isEditDate.value== true){
+              if (controller.isEdit.value == true){
                 controller.currentStep.value = 2;
+
+                controller.isEdit.value = false;
+              }else if(controller.isEditDate.value== true){
+                controller.currentStep.value = 2;
+                controller.isEditDate.value = false;
               }else {
+
                 if (controller.currentStep.value == 0) {
                   controller.currentStep.value = 1;
+
                   SellScrapItemController.getDateListApi();
                 } else if (controller.currentStep.value == 1) {
                   if(controller.selectedDate== null){
@@ -1063,10 +1083,37 @@ class SellScrapItemView extends StatelessWidget {
                     controller.currentStep.value = 2;
                   }
                 } else {
+
                   controller.getCompleteAPI(context);
                 }
 
               }
+
+
+
+
+              // if(controller.isEdit.value == true || controller.isEditDate.value== true){
+              //   controller.currentStep.value = 2;
+              //   print("object Code Test");
+              //
+              // }else {
+              //   print("object Code Test 1");
+              //   if (controller.currentStep.value == 0) {
+              //     controller.currentStep.value = 1;
+              //     print("object Code Test 2");
+              //     SellScrapItemController.getDateListApi();
+              //   } else if (controller.currentStep.value == 1) {
+              //     if(controller.selectedDate== null){
+              //       Fluttertoast.showToast(msg: "Please Choose Any Date");
+              //     }else {
+              //       controller.currentStep.value = 2;
+              //     }
+              //   } else {
+              //     print("object Code Test 3");
+              //     controller.getCompleteAPI(context);
+              //   }
+              //
+              // }
 
 
               controller.update();

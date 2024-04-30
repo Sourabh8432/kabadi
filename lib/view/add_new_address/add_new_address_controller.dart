@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:ffi';
 
 import 'package:flutter/cupertino.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -9,6 +10,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:get/get.dart';
 import 'package:kabadi_app/network/urls.dart';
 import 'package:kabadi_app/routes/app_pages.dart';
+import 'package:kabadi_app/view/sell_scrap_item/sell_scrap_item_controller.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:http/http.dart' as http;
 import '../../models/add_address_models.dart';
@@ -20,7 +22,7 @@ class AddNewAddressController extends GetxController {
   RxBool isLoading = false.obs;
   RxDouble mapLatitude = 0.0.obs;
   RxDouble mapLongitude = 0.0.obs;
-  late LatLng markerLocation = const LatLng(0.0, 0.0);
+  LatLng? markerLocation;
   GoogleMapController? mapController;
   Set<Marker> markers = {};
   RxString address = "".obs;
@@ -31,6 +33,9 @@ class AddNewAddressController extends GetxController {
   RxString locality = "".obs;
   RxString addressLine = "".obs;
   RxString pincode = "".obs;
+  RxString addressId = "".obs;
+  dynamic myArguments = Get.arguments;
+  RxInt selectedIndex = 0.obs;
 
 
 
@@ -67,9 +72,24 @@ class AddNewAddressController extends GetxController {
   void onInit() {
     super.onInit();
     checkLocationPermission();
+    getAddressID();
     getCurrentLocation().then((value) {
       updateMarkerLocation(mapLatitude.value, mapLongitude.value);
     });
+
+
+  }
+
+  CameraPosition getInitialCameraPosition(LatLng markerLocation) {
+    return CameraPosition(
+      target: LatLng(markerLocation.latitude, markerLocation.longitude),
+      zoom: 16,
+    );
+  }
+
+
+  void getAddressID () async {
+    addressId.value = await AppPrefrence.getString("address_id");
   }
 
 
@@ -114,27 +134,38 @@ class AddNewAddressController extends GetxController {
   }
 
 
+  void getMyAddress() async {
+    showLoading();
+    Position position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+
+    LatLng searchedLocation = LatLng(position.latitude, position.longitude);
+    markerLocation = searchedLocation;
+    hideLoading();
+    mapController?.animateCamera(CameraUpdate.newLatLng(searchedLocation));
+     update();
+  }
+
+
 
   void updateMarkerLocation(double latitude, double longitude) {
     markerLocation = LatLng(latitude, longitude);
-    update(); // Ensure the UI reflects the changes
-
-    // Convert latitude and longitude to address
+    update();
     getAddressFromLatLng(latitude, longitude).then((address) {
       print('Address: $address');
-      // Do something with the address, e.g., update UI
     });
   }
 
 
   void enterAddress () async{
-    LatLng selectedLocation = markerLocation;
+    LatLng selectedLocation = markerLocation!;
     String address = await getAddressFromLatLng(
       selectedLocation.latitude,
       selectedLocation.longitude,
     );
     localityController.text = address.split(',').elementAt(0).trim();
-    addressController.text = address.substring(address.indexOf(',') + 2).trim();
+
+    addressController.text = address == "00"?"":address.substring(address.indexOf(',') + 2).trim();
+
     update();
 
   }
@@ -195,10 +226,12 @@ class AddNewAddressController extends GetxController {
       });
       hideLoading();
       AddAddressModels addAddressModels = AddAddressModels.fromJson(jsonDecode(response.body));
-      print("editProfile : ${jsonDecode(response.body)}");
+
       if (addAddressModels.status == 1) {
+        Fluttertoast.showToast(msg: "${addAddressModels.message}");
           Get.back();
-          Get.offAllNamed(Routes.sellScrapView);
+          Get.back();
+          Get.back();
 
         print("message : ${addAddressModels.message}");
       } else {
@@ -210,5 +243,55 @@ class AddNewAddressController extends GetxController {
     }
   }
 
+  Future<void> editAddress(String locationType, String locality, String addressLine, String pincode, String longitude, String latitude, String addressId ) async {
 
+    try {
+      showLoading();
+      final url = Uri.parse(Url.addAddress);
+      final response = await http.post(url, headers: {
+        'Authorization': "Bearer ${await AppPrefrence.getString('token')}",
+        'Accept': 'application/json'
+      }, body: {
+        "location_type": locationType,
+        "locality": locality,
+        "address_line": addressLine,
+        "pincode": pincode,
+        "longitude": longitude,
+        "latitude": latitude,
+        "address_id": addressId,
+      });
+      hideLoading();
+      AddAddressModels addAddressModels = AddAddressModels.fromJson(jsonDecode(response.body));
+      print("editaddress : ${jsonDecode(response.body)}");
+      if (addAddressModels.status == 1) {
+        print("screen : ${myArguments[1]["screen"]}");
+        if(myArguments[1]["screen"] == "Profile"){
+          Get.offAndToNamed(Routes.profileView);
+          AppPrefrence.putString("address", "${addAddressModels.data?.addressLine.toString()}, ${addAddressModels.data?.locality.toString()}, ${addAddressModels.data?.pincode.toString()}");
+        }else if(myArguments[1]["screen"] == "SellScrap"){
+          Get.back();
+          Get.back();
+          Get.back();
+        }else if (myArguments[1]["screen"] == "SellScrapItem"){
+          SellScrapItemController sellScrapItemController = Get.find();
+          Get.offAndToNamed(Routes.sellScrapItemView);
+          sellScrapItemController.updateMyAddress.value = true;
+          AppPrefrence.putString("address", "${addAddressModels.data?.addressLine.toString()}, ${addAddressModels.data?.locality.toString()}, ${addAddressModels.data?.pincode.toString()}");
+          AppPrefrence.putString("address_Id", addressId);
+          sellScrapItemController.getUserId();
+
+          print("addAddressModels ${"${addAddressModels.data?.addressLine.toString()}, ${addAddressModels.data?.locality.toString()}, ${addAddressModels.data?.pincode.toString()}"}");
+          print("addAddressModels $addressId");
+        }
+        update();
+        Fluttertoast.showToast(msg: "${addAddressModels.message}");
+        print("message : ${addAddressModels.message}");
+      } else {
+        Fluttertoast.showToast(msg: addAddressModels.message!);
+        print("message : ${addAddressModels.message}");
+      }
+    } catch (e) {
+      print("error : $e");
+    }
+  }
 }

@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 import 'package:kabadi_app/view/welcome_screen/welcome_view.dart';
 
+import '../view/add_new_address/add_new_address_controller.dart';
 import '../view/add_new_address/add_new_address_view.dart';
 import '../view/choose_language/choose_language_view.dart';
 import '../view/edit_profile_screen/edit_profile_view.dart';
@@ -83,7 +84,14 @@ class AppPages {
     ),GetPage(
       name: Routes.addNewAddressView,
       page: () =>  const AddNewAddressView(),
+      binding: AddNewAddressBinding(),
     ),
 
   ];
+}
+class AddNewAddressBinding extends Bindings {
+  @override
+  void dependencies() {
+    Get.lazyPut(() => AddNewAddressController());
+  }
 }

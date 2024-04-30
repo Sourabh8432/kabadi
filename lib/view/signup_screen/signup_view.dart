@@ -146,9 +146,13 @@ class SignupView extends StatelessWidget {
               if (controller.number.text.toString().isEmpty) {
 
                 Fluttertoast.showToast(msg: "Please Enter Mobile Number");
-              } else {
+              } else if(controller.number.text.toString().length < 9 && controller.number.text.toString().length > 10)  {
+                Fluttertoast.showToast(msg: "Please Enter Valid Mobile Number");
+              }else {
+                // Get.toNamed(Routes.otpView, arguments:  controller.number.text.toString()?? "null");
                 onTapContinue();
               }
+
             },
             child: Container(
               margin: const EdgeInsets.symmetric(horizontal: 20,vertical: 20),
@@ -183,7 +187,7 @@ class SignupView extends StatelessWidget {
   onTapContinue() {
     SignupController signupController = Get.find();
     signupController.signUpApi(signupController.number.text.toString());
-    Get.toNamed(Routes.otpView);
+
     // TODO: implement Actions
   }
 }

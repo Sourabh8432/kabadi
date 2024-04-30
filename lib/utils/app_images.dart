@@ -11,6 +11,7 @@ class AppImages{
 
 
   static String get pickupAppbar => "assets/images/pickup_appbar.png";
+  static String get profileBg => "assets/images/profile_bg.png";
 
 
   static String get drawerImage => "assets/images/drawer.png";

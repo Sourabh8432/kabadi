@@ -1,7 +1,9 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:kabadi_app/network/urls.dart';
@@ -19,16 +21,21 @@ class TrackPickupController extends GetxController {
   RxInt currentStep = 0.obs;
   RxBool completed = false.obs;
   RxBool isLoading = false.obs;
+  RxBool isEdited = false.obs;
   var myData = Get.arguments;
   RxString selectedValue = "".obs;
   RxString selectedId = "".obs;
   RxString pickupID = "".obs;
+  RxString editedData = "".obs;
   List<CancelListData> getReasonList = [];
+
 
   @override
   void onInit() {
     // TODO: implement onInit
     super.onInit();
+    getData();
+    log("myData : ${myData[0]["type"]}");
   }
 
   void showLoading() {
@@ -38,6 +45,12 @@ class TrackPickupController extends GetxController {
 
   void hideLoading() {
     isLoading(false);
+    update();
+  }
+
+  void getData () async{
+    editedData.value = await AppPrefrence.getString("change_date");
+    print("editedData.value :${editedData.value}");
     update();
   }
 
@@ -62,8 +75,10 @@ class TrackPickupController extends GetxController {
       print("data : ${jsonEncode(cancelList.data)}");
       if (cancelList.status == 1) {
         getReasonList = cancelList.data!;
+        Fluttertoast.showToast(msg: "${cancelList.message}");
         print("message : ${cancelList.message}");
       } else {
+        Fluttertoast.showToast(msg: "${cancelList.message}");
         print("message : ${cancelList.message}");
       }
     } catch (e) {
@@ -83,7 +98,7 @@ class TrackPickupController extends GetxController {
             'Accept': 'application/json'
           },
           body: {
-            'pickup_request_id': myData.pickupRequestId,
+            'pickup_request_id': myData[0]["data"].pickupRequestId,
             'cancel_id': cancelId
           }
       );
@@ -95,8 +110,10 @@ class TrackPickupController extends GetxController {
         pickupID.value = pickupCancelRequest.data!.pickupRequestId!;
         Get.back();
         _showPickupRequestCancel(context, pickupID.value);
+        Fluttertoast.showToast(msg: "${pickupCancelRequest.message}");
         print("message : ${pickupCancelRequest.message}");
       } else {
+        Fluttertoast.showToast(msg: "${pickupCancelRequest.message}");
         print("message : ${pickupCancelRequest.message}");
       }
     } catch (e) {
