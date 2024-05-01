@@ -51,6 +51,7 @@ class TrackPickupController extends GetxController {
   void getData () async{
     editedData.value = await AppPrefrence.getString("change_date");
     print("editedData.value :${editedData.value}");
+    print("myData :${myData}");
     update();
   }
 
@@ -108,7 +109,6 @@ class TrackPickupController extends GetxController {
       print("pickupCancelRequest : ${jsonEncode(pickupCancelRequest)}");
       if (pickupCancelRequest.status == 1) {
         pickupID.value = pickupCancelRequest.data!.pickupRequestId!;
-        Get.back();
         _showPickupRequestCancel(context, pickupID.value);
         Fluttertoast.showToast(msg: "${pickupCancelRequest.message}");
         print("message : ${pickupCancelRequest.message}");
@@ -171,7 +171,7 @@ class TrackPickupController extends GetxController {
               InkWell(
                 onTap: () {
                   // clearData();
-                  Get.toNamed(Routes.sellScrapView);
+                  Get.toNamed(Routes.myPickupView);
 
                 },
 

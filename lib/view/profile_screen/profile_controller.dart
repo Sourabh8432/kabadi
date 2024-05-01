@@ -63,6 +63,7 @@ class ProfileController extends GetxController {
       if (profileModel.status == 1) {
         profileList = profileModel.data;
         AppPrefrence.putString("profile_image", profileModel.data?.image ?? "");
+        AppPrefrence.putString("name", profileModel.data?.name ?? "");
         update();
         Fluttertoast.showToast(msg: "${profileModel.message}");
         print("message : ${profileModel.message}");

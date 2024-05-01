@@ -119,11 +119,11 @@ class SignupView extends StatelessWidget {
   }
   PreferredSizeWidget _buildAppBar() {
     return AppBar(
-        leadingWidth: 30,
-        leading: GestureDetector(
+        leadingWidth: 40,
+        leading: InkWell(
           onTap: onTapArrowLeft,
           child: Container(
-            margin: const EdgeInsets.only(left: 20),
+            margin: const EdgeInsets.only(left: 20,right: 10),
             child: SvgPicture.asset(
               AppImages.backArrow,
             ),

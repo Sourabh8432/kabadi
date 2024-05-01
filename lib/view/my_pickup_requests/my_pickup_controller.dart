@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
@@ -23,7 +24,13 @@ class MyPickupController extends GetxController {
     // TODO: implement onInit
     super.onInit();
     pickupRequestsApi();
+
+    print("pickupRequestsList : $pickupRequestsList");
   }
+
+
+
+
 
   void showLoading() {
     isLoading(true);
@@ -35,21 +42,19 @@ class MyPickupController extends GetxController {
     update();
   }
 
-  //
-  // void isComandata(){
-  //
-  // }
-  //
+
+
+
   Future<void> pickupRequestsApi() async {
 
-    try {
+    // try {
       showLoading();
       final url = Uri.parse(Url.getPickupListUrl);
       final response = await http.get(
         url,
         headers: {
-          'Authorization': "Bearer 2|hpcofkhacU6Hdah5YKZAhC9rqeblJH23Ub8blyVU66db5add",
-          // 'Authorization': "Bearer ${await AppPrefrence.getString('token')}",
+          // 'Authorization': "Bearer 2|hpcofkhacU6Hdah5YKZAhC9rqeblJH23Ub8blyVU66db5add",
+          'Authorization': "Bearer ${await AppPrefrence.getString('token')}",
           'Accept': 'application/json',
           'Content-Type': 'application/json'
         },
@@ -62,14 +67,14 @@ class MyPickupController extends GetxController {
       if (pickupRequestModels.status == 1) {
         pickupRequestsList = pickupRequestModels.data!;
         Fluttertoast.showToast(msg: "${pickupRequestModels.message}");
-        print("message : ${pickupRequestModels.message}");
+        log("message : ${jsonEncode(pickupRequestModels.data)}");
       } else {
         Fluttertoast.showToast(msg: "${pickupRequestModels.message}");
         print("message : ${pickupRequestModels.message}");
       }
-    } catch (e) {
-      print("error : $e");
-    }
+    // } catch (e) {
+    //   print("error : $e");
+    // }
   }
 
 

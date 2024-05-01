@@ -105,7 +105,7 @@ class MyPickupView extends StatelessWidget {
                                           arguments: [
                                             {
                                               'data': controller.pickupRequestsList!.upcoming?[index],
-                                              'type': "SellScrapItem", // or false, depending on your requirement
+                                              'type': "edit", // or false, depending on your requirement
                                             }
                                           ],);
                                       // Get.toNamed(Routes.trackPickupView,arguments: controller.pickupRequestsList!.upcoming?[index]);
@@ -256,7 +256,7 @@ class MyPickupView extends StatelessWidget {
                                         Get.toNamed(Routes.trackPickupView,arguments: [
                                           {
                                             'data': controller.pickupRequestsList!.previous?[index],
-                                            'type': "SellScrapItem", // or false, depending on your requirement
+                                            'type': "edit", // or false, depending on your requirement
                                           }
                                         ],);
                                         // Get.toNamed(Routes.trackPickupView,arguments: controller.pickupRequestsList!.previous?[index]);

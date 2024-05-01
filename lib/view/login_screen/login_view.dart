@@ -116,13 +116,13 @@ class LoginView extends StatelessWidget {
   }
   PreferredSizeWidget _buildAppBar() {
     return AppBar(
-        leadingWidth: 30,
+        leadingWidth: 40,
         leading: InkWell(
           onTap: (){
             Get.back();
           },
           child: Container(
-            margin: const EdgeInsets.only(left: 20),
+            margin: const EdgeInsets.only(left: 20,right: 10),
             child: SvgPicture.asset(
               AppImages.backArrow,
             ),

@@ -166,7 +166,7 @@ class TrackPickupView extends StatelessWidget {
                           ),
                           Expanded(
                             child: Divider(
-                              color: controller.currentStep >= 0
+                              color: controller.myData[0]["data"].pickupStatus == "Pending"
                                   ? primaryColor
                                   : borderColor,
                               thickness: 4,
@@ -177,7 +177,7 @@ class TrackPickupView extends StatelessWidget {
                             width: 30,
                             alignment: Alignment.center,
                             decoration: BoxDecoration(
-                              color: controller.currentStep > 0
+                              color: controller.myData[0]["data"].pickupStatus == "Pending"
                                   ? primaryColor
                                   : borderColor,
                               shape: BoxShape.circle,
@@ -189,7 +189,7 @@ class TrackPickupView extends StatelessWidget {
                           ),
                           Expanded(
                             child: Divider(
-                              color: controller.currentStep > 1
+                              color: controller.myData[0]["data"].pickupStatus == "Confirmed"
                                   ? primaryColor
                                   : borderColor,
                               thickness: 4,
@@ -200,7 +200,7 @@ class TrackPickupView extends StatelessWidget {
                             width: 30,
                             alignment: Alignment.center,
                             decoration: BoxDecoration(
-                              color: controller.currentStep > 1
+                              color: controller.myData[0]["data"].pickupStatus == "Confirmed"
                                   ? primaryColor
                                   : borderColor,
                               shape: BoxShape.circle,
