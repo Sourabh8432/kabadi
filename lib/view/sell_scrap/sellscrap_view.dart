@@ -1462,7 +1462,7 @@ class SellScrapView extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 20),
-                  SizedBox(
+                  sellController.myAddressData.length!= 0?SizedBox(
                     height: 300,
                     child: ListView.builder(
                       // shrinkWrap: true,
@@ -1532,7 +1532,7 @@ class SellScrapView extends StatelessWidget {
                         ));
                       },
                     ),
-                  ),
+                  ):SizedBox(),
                   const SizedBox(height: 10),
                   Text(
                     "or".tr,
