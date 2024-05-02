@@ -2,10 +2,8 @@ import 'package:get/get.dart';
 
 import '../../models/pickup_request_models.dart';
 
-class RequestCancelledController extends GetxController {
-  // PickupRequestUpcoming myUpComingData = Get.arguments;
+class ContactUsController extends GetxController {
 
-  var myPreviousData = Get.arguments;
 
   @override
   void onInit() {

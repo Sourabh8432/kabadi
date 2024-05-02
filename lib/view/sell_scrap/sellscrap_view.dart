@@ -14,6 +14,8 @@ import 'package:kabadi_app/view/sell_scrap/sellscrap_controller.dart';
 import 'package:kabadi_app/view/sell_scrap_item/sell_scrap_item_view.dart';
 import 'package:kabadi_app/view/welcome_screen/welcome_view.dart';
 import 'package:pinput/pinput.dart';
+import 'package:share_plus/share_plus.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../models/get_category_models.dart';
 import '../../models/get_price_list.dart';
 import '../../routes/app_pages.dart';
@@ -514,7 +516,7 @@ class SellScrapView extends StatelessWidget {
                       onTap: () {
                         controller.tabController.value = 0;
                         controller.update();
-                        Navigator.pop(context);
+                        Get.back();
                       },
                     ),
                     ListTile(
@@ -534,7 +536,7 @@ class SellScrapView extends StatelessWidget {
                       onTap: () {
                         controller.tabController.value = 1;
                         controller.update();
-                        Navigator.pop(context);
+                        Get.back();
                       },
                     ),
                     ListTile(
@@ -552,7 +554,7 @@ class SellScrapView extends StatelessWidget {
                             fontFamily: "Poppins"),
                       ),
                       onTap: () {
-                        Navigator.pop(context);
+                        Get.back();
                         Get.toNamed(Routes.myPickupView);
                       },
                     ),
@@ -571,7 +573,8 @@ class SellScrapView extends StatelessWidget {
                             fontFamily: "Poppins"),
                       ),
                       onTap: () {
-                        Navigator.pop(context);
+                        Get.back();
+                        Get.toNamed(Routes.howWeWorkView);
                       },
                     ),
                     ListTile(
@@ -589,7 +592,8 @@ class SellScrapView extends StatelessWidget {
                             fontFamily: "Poppins"),
                       ),
                       onTap: () {
-                        Navigator.pop(context);
+                        Get.back();
+                        shareLink();
                       },
                     ),
                     ListTile(
@@ -607,7 +611,8 @@ class SellScrapView extends StatelessWidget {
                             fontFamily: "Poppins"),
                       ),
                       onTap: () {
-                        Navigator.pop(context);
+                        Get.back();
+                        Get.toNamed(Routes.contactView);
                       },
                     ),
                     ListTile(
@@ -617,10 +622,10 @@ class SellScrapView extends StatelessWidget {
                         width: 25,
                       ),
                       title: Container(
-                        padding: const EdgeInsets.only(right: 10),
-                        child: const Row(
+                        padding:  const EdgeInsets.only(right: 10),
+                        child:   Row(
                           children: [
-                            Text(
+                            const Text(
                               ' Language ',
                               style: TextStyle(
                                   color: Color(0xff7B7C87),
@@ -630,8 +635,8 @@ class SellScrapView extends StatelessWidget {
                             ),
                             Spacer(),
                             Text(
-                              ' En ',
-                              style: TextStyle(
+                              controller.isCheck.value == 0 ?'En' : "Hi",
+                              style: const TextStyle(
                                   color: Color(0xff003032),
                                   fontSize: 16,
                                   fontWeight: FontWeight.w400,
@@ -641,7 +646,7 @@ class SellScrapView extends StatelessWidget {
                         ),
                       ),
                       onTap: () {
-                        Navigator.pop(context);
+                        Get.back();
                         chooseLangDialog(context, controller);
                       },
                     ),
@@ -664,7 +669,7 @@ class SellScrapView extends StatelessWidget {
                         ),
                       ),
                       onTap: () {
-                        Navigator.pop(context);
+                        Get.back();
                         showLogoutDialog(context);
                       },
                     ),
@@ -691,49 +696,55 @@ class SellScrapView extends StatelessWidget {
                       padding: const EdgeInsets.symmetric(horizontal: 20),
                       child: Row(
                         children: [
-                          Container(
-                            decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                border:
-                                Border.all(color: primaryColor, width: 1)),
-                            margin: const EdgeInsets.only(right: 15),
-                            alignment: Alignment.center,
-                            height: 50,
-                            width: 50,
-                            child: SvgPicture.asset(
-                              AppImages.instagramMenu,
-                              height: 25,
-                              width: 25,
+                          GestureDetector(onTap: () => launchFacebook(),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  border:
+                                  Border.all(color: primaryColor, width: 1)),
+                              margin: const EdgeInsets.only(right: 15),
+                              alignment: Alignment.center,
+                              height: 50,
+                              width: 50,
+                              child: SvgPicture.asset(
+                                AppImages.instagramMenu,
+                                height: 25,
+                                width: 25,
+                              ),
                             ),
                           ),
-                          Container(
-                              decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  border: Border.all(
-                                      color: primaryColor, width: 1)),
-                              margin: const EdgeInsets.only(right: 15),
-                              alignment: Alignment.center,
-                              height: 50,
-                              width: 50,
-                              child: SvgPicture.asset(
-                                AppImages.twitterMenu,
-                                height: 25,
-                                width: 25,
-                              )),
-                          Container(
-                              decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  border: Border.all(
-                                      color: primaryColor, width: 1)),
-                              margin: const EdgeInsets.only(right: 15),
-                              alignment: Alignment.center,
-                              height: 50,
-                              width: 50,
-                              child: SvgPicture.asset(
-                                AppImages.facebookMenu,
-                                height: 25,
-                                width: 25,
-                              )),
+                          GestureDetector(onTap: () => launchTwitter(),
+                            child: Container(
+                                decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    border: Border.all(
+                                        color: primaryColor, width: 1)),
+                                margin: const EdgeInsets.only(right: 15),
+                                alignment: Alignment.center,
+                                height: 50,
+                                width: 50,
+                                child: SvgPicture.asset(
+                                  AppImages.twitterMenu,
+                                  height: 25,
+                                  width: 25,
+                                )),
+                          ),
+                          GestureDetector(onTap: () => launchFacebook(),
+                            child: Container(
+                                decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    border: Border.all(
+                                        color: primaryColor, width: 1)),
+                                margin: const EdgeInsets.only(right: 15),
+                                alignment: Alignment.center,
+                                height: 50,
+                                width: 50,
+                                child: SvgPicture.asset(
+                                  AppImages.facebookMenu,
+                                  height: 25,
+                                  width: 25,
+                                )),
+                          ),
                         ],
                       ),
                     ),
@@ -1398,7 +1409,7 @@ class SellScrapView extends StatelessWidget {
             const Spacer(),
             InkWell(
                 onTap: () {
-                  Navigator.pop(context);
+                  Get.back();
                 },
                 child: Container(
                     alignment: Alignment.center,
@@ -1636,7 +1647,7 @@ class SellScrapView extends StatelessWidget {
     return TextButton(
       child: const Text("NO"),
       onPressed: () {
-        Navigator.pop(context);
+        Get.back();
       },
     );
   }
@@ -1649,4 +1660,36 @@ class SellScrapView extends StatelessWidget {
       },
     );
   }
+
+  void launchFacebook() async {
+    const facebookUrl = 'https://www.facebook.com/kabadiathome?mibextid=qi2Omg';
+    if (await canLaunchUrl(Uri.parse(facebookUrl))) {
+      await launchUrl(Uri.parse(facebookUrl));
+    } else {
+      throw 'Could not launch $facebookUrl';
+    }
+  }
+
+  void launchTwitter() async {
+    const twitterUrl = 'https://twitter.com/kabadiathome';
+    if (await canLaunchUrl(Uri.parse(twitterUrl))) {
+      await launchUrl(Uri.parse(twitterUrl));
+    } else {
+      throw 'Could not launch $twitterUrl';
+    }
+  }
+
+  void launchInstagram() async {
+    const instagramUrl = 'https://www.instagram.com/kabadiathome/?igsh=YWdsMnZyMnNmaXB5';
+    if (await canLaunchUrl(Uri.parse(instagramUrl))) {
+      await launchUrl(Uri.parse(instagramUrl));
+    } else {
+      throw 'Could not launch $instagramUrl';
+    }
+  }
+
+  void shareLink() {
+    Share.share('https://kabadiathome.com/',subject: "Download Now");
+  }
+
 }

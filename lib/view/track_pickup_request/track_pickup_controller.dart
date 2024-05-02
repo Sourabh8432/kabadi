@@ -16,6 +16,7 @@ import '../../models/pickup_reschedule.dart';
 import '../../routes/app_pages.dart';
 import '../../utils/app_colors.dart';
 import '../../utils/app_prefrences.dart';
+import '../my_pickup_requests/my_pickup_controller.dart';
 
 class TrackPickupController extends GetxController {
   RxInt currentStep = 0.obs;
@@ -28,7 +29,7 @@ class TrackPickupController extends GetxController {
   RxString pickupID = "".obs;
   RxString editedData = "".obs;
   List<CancelListData> getReasonList = [];
-
+  MyPickupController myPickup = Get.find();
 
   @override
   void onInit() {
@@ -37,6 +38,7 @@ class TrackPickupController extends GetxController {
     getData();
     log("myData : ${myData[0]["type"]}");
   }
+
 
   void showLoading() {
     isLoading(true);
@@ -51,7 +53,7 @@ class TrackPickupController extends GetxController {
   void getData () async{
     editedData.value = await AppPrefrence.getString("change_date");
     print("editedData.value :${editedData.value}");
-    print("myData :${myData}");
+    print("myData :$myData");
     update();
   }
 
@@ -171,7 +173,7 @@ class TrackPickupController extends GetxController {
               InkWell(
                 onTap: () {
                   // clearData();
-                  Get.toNamed(Routes.myPickupView);
+                  Get.toNamed(Routes.sellScrapView);
 
                 },
 

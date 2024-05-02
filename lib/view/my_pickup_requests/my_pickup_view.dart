@@ -97,9 +97,6 @@ class MyPickupView extends StatelessWidget {
                                   PickupRequestUpcoming?  upcomingList = controller.pickupRequestsList!.upcoming?[index];
 
                                   return InkWell(onTap: (){
-                                    controller.isCheck.value = true;
-                                    // controller.isComandata(upcomingList.pickupStatus!,[] as PickupRequestPrevious,controller.pickupRequestsList!.upcoming![index],true );
-
                                     if(upcomingList.pickupStatus == "Upcoming"){
                                       Get.toNamed(Routes.trackPickupView,
                                           arguments: [
@@ -108,13 +105,18 @@ class MyPickupView extends StatelessWidget {
                                               'type': "edit", // or false, depending on your requirement
                                             }
                                           ],);
-                                      // Get.toNamed(Routes.trackPickupView,arguments: controller.pickupRequestsList!.upcoming?[index]);
-                                    }else if (upcomingList.pickupStatus == "Completed"){
-                                      Get.toNamed(Routes.requestCancelledView, arguments: controller.pickupRequestsList!.upcoming?[index] );
-                                    }else {
-                                      Get.toNamed(Routes.requestCancelledView, arguments: controller.pickupRequestsList!.upcoming?[index]);
+                                    }else if (upcomingList.pickupStatus == "Cancelled" || upcomingList.pickupStatus == "Completed"){
+                                      Get.toNamed(Routes.requestCancelledView, arguments: controller.pickupRequestsList!.previous?[index] );
                                     }
+                                    else {
 
+                                      Get.toNamed(Routes.trackPickupView,arguments: [
+                                        {
+                                          'data': controller.pickupRequestsList!.previous?[index],
+                                          'type': "edit", // or false, depending on your requirement
+                                        }
+                                      ],);
+                                    }
                                   },
                                     child: Container(
                                       margin: const EdgeInsets.only(bottom: 15),
@@ -259,11 +261,18 @@ class MyPickupView extends StatelessWidget {
                                             'type': "edit", // or false, depending on your requirement
                                           }
                                         ],);
-                                        // Get.toNamed(Routes.trackPickupView,arguments: controller.pickupRequestsList!.previous?[index]);
-                                      }else if (previousList.pickupStatus == "Completed"){
+
+                                      }else if (previousList.pickupStatus == "Cancelled" || previousList.pickupStatus == "Completed"){
                                         Get.toNamed(Routes.requestCancelledView, arguments: controller.pickupRequestsList!.previous?[index] );
-                                      }else {
-                                        Get.toNamed(Routes.requestCancelledView, arguments: controller.pickupRequestsList!.previous?[index]);
+                                      }
+                                      else {
+
+                                        Get.toNamed(Routes.trackPickupView,arguments: [
+                                          {
+                                            'data': controller.pickupRequestsList!.previous?[index],
+                                            'type': "edit", // or false, depending on your requirement
+                                          }
+                                        ],);
                                       }
                                     },
                                     child: Container(

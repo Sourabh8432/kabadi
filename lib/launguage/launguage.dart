@@ -61,7 +61,13 @@ class LocaleString extends Translations {
       "camera": "Take Photo",
       "gallery": "Choose From Gallery",
       "selectImage": "Select Image",
+      "contactUs": "Contact Us",
+      "howWeWork": "How We Work",
+      "completed": "Completed",
+      "requestCompleted": "Request Completed",
     },
+
+
     'hi_IN': {
       "welcome_text": "स्वागत है",
       "welcome_subtext": "अपने दरवाजे पर रद्दी बेचना आसान बना दिया: कबाड़ी",
@@ -119,9 +125,9 @@ class LocaleString extends Translations {
       "submit": "प्रस्तुत करें",
       "camera": "फोटो खींचें",
        "gallery": "गैलरी से चयन करें",
-      "selectImage": "छवि का चयन करें"
-    }
-
-    ,
+      "selectImage": "छवि का चयन करें",
+     "contactUs": "संपर्क करें",
+     "howWeWork": "हम कैसे काम करते हैं",
+    },
   };
 }

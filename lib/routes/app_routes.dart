@@ -17,5 +17,7 @@ abstract class Routes {
   static const signupView = '/signup_view';
   static const sellScrapItemView = '/sell_scrap_item_view';
   static const addNewAddressView = '/addNew_address_view';
+  static const contactView = '/contact_view';
+  static const howWeWorkView = '/how_we_work_view';
 
 }

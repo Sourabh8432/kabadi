@@ -13,7 +13,7 @@ import '../../utils/app_prefrences.dart';
 
 class MyPickupController extends GetxController {
   RxBool isLoading = false.obs;
-  RxBool isCheck = false.obs;
+
   PickupRequestData? pickupRequestsList;
 
 
@@ -27,8 +27,6 @@ class MyPickupController extends GetxController {
 
     print("pickupRequestsList : $pickupRequestsList");
   }
-
-
 
 
 

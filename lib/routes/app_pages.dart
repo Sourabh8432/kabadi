@@ -1,4 +1,6 @@
 import 'package:get/get.dart';
+import 'package:kabadi_app/view/contact_us/contact_us_view.dart';
+import 'package:kabadi_app/view/how_we_work/how_we_work_view.dart';
 import 'package:kabadi_app/view/welcome_screen/welcome_view.dart';
 
 import '../view/add_new_address/add_new_address_controller.dart';
@@ -78,10 +80,18 @@ class AppPages {
     ),GetPage(
       name: Routes.rescheduleView,
       page: () =>  const RescheduleView(),
-    ),GetPage(
+    ),
+    GetPage(
       name: Routes.signupView,
       page: () =>  const SignupView(),
     ),GetPage(
+      name: Routes.contactView,
+      page: () =>  const ContactUsView(),
+    ),GetPage(
+      name: Routes.howWeWorkView,
+      page: () =>  const HowWeWorkView(),
+    ),
+    GetPage(
       name: Routes.addNewAddressView,
       page: () =>  const AddNewAddressView(),
       binding: AddNewAddressBinding(),

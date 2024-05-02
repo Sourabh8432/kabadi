@@ -69,4 +69,14 @@ class AppImages{
   static String get pickUpClose => "assets/images/pickup_close.svg";
   static String get checkoutImage => "assets/images/checkout_Image.svg";
 
+
+
+
+  static String get contactUsImage => "assets/images/contact_us.png";
+  static String get completedImage => "assets/images/completed.png";
+  static String get hw1 => "assets/images/hw1.png";
+  static String get hw2 => "assets/images/hw2.png";
+  static String get hw3 => "assets/images/hw3.png";
+  static String get line => "assets/images/line.png";
+
 }

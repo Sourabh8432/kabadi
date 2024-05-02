@@ -22,7 +22,7 @@ class RequestCancelledView extends StatelessWidget {
               children: [
                 Container(
                   alignment: Alignment.bottomLeft,
-                  height: 90,
+                  height: 100,
                   padding: const EdgeInsets.only(bottom: 15),
                   decoration: BoxDecoration(
                     image: DecorationImage(
@@ -47,7 +47,7 @@ class RequestCancelledView extends StatelessWidget {
                         width: 15,
                       ),
                       Text(
-                        "cancelled".tr,
+                        controller.myPreviousData.pickupStatus !="Completed" ?"cancelled".tr : "completed".tr,
                         style: TextStyle(
                           fontSize: 18,
                           fontFamily: "Poppins",
@@ -59,9 +59,9 @@ class RequestCancelledView extends StatelessWidget {
                   ),
                 ),
                 Container(
-                  height: 250,width: Get.width,
+                  height: 300,width: Get.width,
                   margin: const EdgeInsets.symmetric(vertical: 10,horizontal: 20),
-                  child: Image.asset(AppImages.cancelImage,fit: BoxFit.fill,),
+                  child: Image.asset( controller.myPreviousData.pickupStatus !="Completed" ?AppImages.cancelImage:AppImages.completedImage,fit: BoxFit.fill,),
                 ),
                 Padding(
                   padding:
@@ -70,7 +70,7 @@ class RequestCancelledView extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        "Request Cancel",
+                        controller.myPreviousData.pickupStatus !="Completed" ?"Request Cancel":"Request Completed",
                         style: TextStyle(
                           fontSize: 20,
                           fontFamily: "Poppins",
@@ -80,7 +80,7 @@ class RequestCancelledView extends StatelessWidget {
                       ),
                       const SizedBox(height: 5),
                       Text(
-                       "This Scrap Pickup request has been cancelled.",
+                        controller.myPreviousData.pickupStatus !="Completed" ?"This Scrap Pickup request has been cancelled.": "This Scrap Pickup request has been Completed.",
                         style: TextStyle(
                           fontSize: 14,
                           fontFamily: "Poppins",
@@ -121,6 +121,49 @@ class RequestCancelledView extends StatelessWidget {
                     ],
                   ),
                 ),
+                // controller.myPreviousData.pickupStatus =="Completed" ?Padding(
+                //   padding:
+                //   const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+                //   child: Column(
+                //     crossAxisAlignment: CrossAxisAlignment.start,
+                //     children: [
+                //       Text(
+                //         "Pickup Request Date :",
+                //         style: TextStyle(
+                //           fontSize: 16,
+                //           fontFamily: "Poppins",
+                //           color: darkGreenColor,
+                //           fontWeight: FontWeight.w400,
+                //         ),
+                //       ),
+                //       const SizedBox(height: 5),
+                //       Column(crossAxisAlignment: CrossAxisAlignment.start,
+                //         children: [
+                //           Text(
+                //             controller.myPreviousData.pickupDate.toString(),
+                //             style: TextStyle(
+                //               fontSize: 14,
+                //               fontFamily: "Poppins",
+                //               color: darkGreenColor,
+                //               fontWeight: FontWeight.w400,
+                //             ),
+                //           ),
+                //           const SizedBox(height: 5),
+                //           Text(
+                //             controller.myPreviousData.pickupTime.toString(),
+                //             style: TextStyle(
+                //               fontSize: 14,
+                //               fontFamily: "Poppins",
+                //               color: textSubColor,
+                //               fontWeight: FontWeight.w400,
+                //             ),
+                //           ),
+                //         ],
+                //       ),
+                //       const SizedBox(height: 10),
+                //     ],
+                //   ),
+                // ):SizedBox(),
                 Padding(
                   padding:
                       const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
@@ -164,7 +207,7 @@ class RequestCancelledView extends StatelessWidget {
                     ],
                   ),
                 ),
-                Padding(
+                controller.myPreviousData.pickupStatus !="Completed" ?Padding(
                   padding:
                   const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
                   child: Column(
@@ -192,7 +235,50 @@ class RequestCancelledView extends StatelessWidget {
                       const SizedBox(height: 10),
                     ],
                   ),
-                ),
+                ):SizedBox(),
+                controller.myPreviousData.pickupStatus =="Completed" ?Padding(
+                  padding:
+                  const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Address :",
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontFamily: "Poppins",
+                          color: darkGreenColor,
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
+                      const SizedBox(height: 5),
+                      Column(crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            controller.myPreviousData.pickupAddress.locationType.toString(),
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontFamily: "Poppins",
+                              color: darkGreenColor,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                          const SizedBox(height: 5),
+                          Text(
+                            controller.myPreviousData.pickupAddress.addressLine.toString(),
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontFamily: "Poppins",
+                              color: textSubColor,
+                              fontWeight: FontWeight.w400,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 10),
+                    ],
+                  ),
+                ):SizedBox(),
                 Padding(
                   padding:
                   const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
@@ -242,7 +328,72 @@ class RequestCancelledView extends StatelessWidget {
                     ],
                   ),
                 ),
-            
+                controller.myPreviousData.pickupStatus =="Completed" ?Padding(
+                  padding:
+                  const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Payment :",
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontFamily: "Poppins",
+                          color: darkGreenColor,
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
+                      const SizedBox(height: 5),
+                      Column(crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "Cash ${controller.myPreviousData.payment.toString()} ",
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontFamily: "Poppins",
+                              color: darkGreenColor,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 10),
+                    ],
+                  ),
+                ):SizedBox(),
+                controller.myPreviousData.pickupStatus =="Completed" ?Padding(
+                  padding:
+                  const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Remarks :",
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontFamily: "Poppins",
+                          color: darkGreenColor,
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
+                      const SizedBox(height: 5),
+                      Column(crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "Cash ${controller.myPreviousData.remark.toString()} ",
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontFamily: "Poppins",
+                              color: darkGreenColor,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 10),
+                    ],
+                  ),
+                ):SizedBox(),
               ],
             ),
           ),

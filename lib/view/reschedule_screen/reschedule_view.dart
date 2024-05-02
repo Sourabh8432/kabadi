@@ -9,6 +9,7 @@ import 'package:kabadi_app/utils/app_images.dart';
 import 'package:kabadi_app/utils/app_prefrences.dart';
 import 'package:kabadi_app/view/track_pickup_request/track_pickup_controller.dart';
 import '../../models/date_list_models.dart';
+import '../my_pickup_requests/my_pickup_controller.dart';
 import '../sell_scrap_item/sell_scrap_item_controller.dart';
 import 'reschedule_controller.dart';
 
@@ -179,8 +180,10 @@ class RescheduleView extends StatelessWidget {
                 AppPrefrence.putString("change_date", controller.selectedDateTextWidget.value);
                 controller.pickupRescheduleApi(controller.rescheduleId[0]["data"], );
                 TrackPickupController trackPickup = Get.find();
+                MyPickupController myPickup = Get.find();
                 trackPickup.isEdited.value = true;
                 trackPickup.getData();
+                myPickup.pickupRequestsApi();
                 print("test : ${controller.rescheduleId[0]["type"]}");
 
               }else {
